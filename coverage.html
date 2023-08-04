@@ -1,0 +1,1835 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>board: Go Coverage Report</title>
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">github.com/joesantos418/joe-chess/pkg/board/board.go (68.8%)</option>
+				
+				<option value="file1">github.com/joesantos418/joe-chess/pkg/board/pieces.go (0.0%)</option>
+				
+				<option value="file2">github.com/joesantos418/joe-chess/pkg/board/square_names.go (49.2%)</option>
+				
+				<option value="file3">github.com/joesantos418/joe-chess/pkg/rules/check_colors.go (100.0%)</option>
+				
+				<option value="file4">github.com/joesantos418/joe-chess/pkg/rules/check_correct.go (99.0%)</option>
+				
+				<option value="file5">github.com/joesantos418/joe-chess/pkg/rules/check_free.go (99.0%)</option>
+				
+				<option value="file6">github.com/joesantos418/joe-chess/pkg/rules/check_king_in_check.go (31.2%)</option>
+				
+				<option value="file7">github.com/joesantos418/joe-chess/pkg/rules/check_move.go (91.7%)</option>
+				
+				<option value="file8">github.com/joesantos418/joe-chess/pkg/rules/game.go (82.6%)</option>
+				
+				<option value="file9">github.com/joesantos418/joe-chess/pkg/rules/game_start.go (100.0%)</option>
+				
+				<option value="file10">github.com/joesantos418/joe-chess/pkg/rules/invalid_move_reason.go (0.0%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">not covered</span>
+				<span class="cov8">covered</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">package board
+
+import (
+        "github.com/arquivei/foundationkit/errors"
+)
+
+const MAX_COL = 8
+const MAX_LIN = 8
+
+type Square struct {
+        Piece Piece
+}
+
+type Board struct {
+        Squares [8][8]Square
+}
+
+func (b *Board) Move(p Piece, from, to SquareName) error <span class="cov8" title="1">{
+        lin, col := GetCoordinatesBySquareName(from)
+        if b.Squares[lin][col].Piece != p </span><span class="cov8" title="1">{
+                return errors.E(
+                        "cannot find piece to move",
+                        errors.KV("piece", p),
+                        errors.KV("from", from),
+                        errors.KV("to", to),
+                )
+        }</span>
+
+        <span class="cov8" title="1">b.Squares[lin][col].Piece = NO_PIECE
+        lin, col = GetCoordinatesBySquareName(to)
+        b.Squares[lin][col].Piece = p
+
+        return nil</span>
+}
+
+func (b *Board) SetPiece(p Piece, n SquareName) <span class="cov8" title="1">{
+        lin, col := GetCoordinatesBySquareName(n)
+        b.Squares[lin][col].Piece = p
+}</span>
+
+func (b *Board) GetPiece(n SquareName) Piece <span class="cov8" title="1">{
+        lin, col := GetCoordinatesBySquareName(n)
+        return b.Squares[lin][col].Piece
+}</span>
+
+func (b *Board) Clone() *Board <span class="cov0" title="0">{
+        c := &amp;Board{}
+
+        for lin := 0; lin &lt; MAX_LIN; lin++ </span><span class="cov0" title="0">{
+                for col := 0; col &lt; MAX_COL; col++ </span><span class="cov0" title="0">{
+                        c.Squares[lin][col].Piece = b.Squares[lin][col].Piece
+                }</span>
+        }
+
+        <span class="cov0" title="0">return c</span>
+}
+</pre>
+		
+		<pre class="file" id="file1" style="display: none">package board
+
+type Piece int64
+
+const (
+        NO_PIECE Piece = iota
+        WHITE_PAWN_A
+        WHITE_PAWN_B
+        WHITE_PAWN_C
+        WHITE_PAWN_D
+        WHITE_PAWN_E
+        WHITE_PAWN_F
+        WHITE_PAWN_G
+        WHITE_PAWN_H
+        WHITE_ROOK_QUEEN
+        WHITE_ROOK_KING
+        WHITE_KNIGHT_QUEEN
+        WHITE_KNIGHT_KING
+        WHITE_BISHOP_QUEEN
+        WHITE_BISHOP_KING
+        WHITE_QUEEN
+        WHITE_KING
+        BLACK_PAWN_A
+        BLACK_PAWN_B
+        BLACK_PAWN_C
+        BLACK_PAWN_D
+        BLACK_PAWN_E
+        BLACK_PAWN_F
+        BLACK_PAWN_G
+        BLACK_PAWN_H
+        BLACK_ROOK_QUEEN
+        BLACK_ROOK_KING
+        BLACK_KNIGHT_QUEEN
+        BLACK_KNIGHT_KING
+        BLACK_BISHOP_QUEEN
+        BLACK_BISHOP_KING
+        BLACK_QUEEN
+        BLACK_KING
+)
+
+func (p Piece) String() string <span class="cov0" title="0">{
+        switch p </span>{
+        case NO_PIECE:<span class="cov0" title="0">
+                return "NO_PIECE"</span>
+        case WHITE_PAWN_A:<span class="cov0" title="0">
+                return "WHITE_PAWN_A"</span>
+        case WHITE_PAWN_B:<span class="cov0" title="0">
+                return "WHITE_PAWN_B"</span>
+        case WHITE_PAWN_C:<span class="cov0" title="0">
+                return "WHITE_PAWN_C"</span>
+        case WHITE_PAWN_D:<span class="cov0" title="0">
+                return "WHITE_PAWN_D"</span>
+        case WHITE_PAWN_E:<span class="cov0" title="0">
+                return "WHITE_PAWN_E"</span>
+        case WHITE_PAWN_F:<span class="cov0" title="0">
+                return "WHITE_PAWN_F"</span>
+        case WHITE_PAWN_G:<span class="cov0" title="0">
+                return "WHITE_PAWN_G"</span>
+        case WHITE_PAWN_H:<span class="cov0" title="0">
+                return "WHITE_PAWN_H"</span>
+        case WHITE_ROOK_QUEEN:<span class="cov0" title="0">
+                return "WHITE_ROOK_QUEEN"</span>
+        case WHITE_ROOK_KING:<span class="cov0" title="0">
+                return "WHITE_ROOK_KING"</span>
+        case WHITE_KNIGHT_QUEEN:<span class="cov0" title="0">
+                return "WHITE_KNIGHT_QUEEN"</span>
+        case WHITE_KNIGHT_KING:<span class="cov0" title="0">
+                return "WHITE_KNIGHT_KING"</span>
+        case WHITE_BISHOP_QUEEN:<span class="cov0" title="0">
+                return "WHITE_BISHOP_QUEEN"</span>
+        case WHITE_BISHOP_KING:<span class="cov0" title="0">
+                return "WHITE_BISHOP_KING"</span>
+        case WHITE_QUEEN:<span class="cov0" title="0">
+                return "WHITE_QUEEN"</span>
+        case WHITE_KING:<span class="cov0" title="0">
+                return "WHITE_KING"</span>
+        case BLACK_PAWN_A:<span class="cov0" title="0">
+                return "BLACK_PAWN_A"</span>
+        case BLACK_PAWN_B:<span class="cov0" title="0">
+                return "BLACK_PAWN_B"</span>
+        case BLACK_PAWN_C:<span class="cov0" title="0">
+                return "BLACK_PAWN_C"</span>
+        case BLACK_PAWN_D:<span class="cov0" title="0">
+                return "BLACK_PAWN_D"</span>
+        case BLACK_PAWN_E:<span class="cov0" title="0">
+                return "BLACK_PAWN_E"</span>
+        case BLACK_PAWN_F:<span class="cov0" title="0">
+                return "BLACK_PAWN_F"</span>
+        case BLACK_PAWN_G:<span class="cov0" title="0">
+                return "BLACK_PAWN_G"</span>
+        case BLACK_PAWN_H:<span class="cov0" title="0">
+                return "BLACK_PAWN_H"</span>
+        case BLACK_ROOK_QUEEN:<span class="cov0" title="0">
+                return "BLACK_ROOK_QUEEN"</span>
+        case BLACK_ROOK_KING:<span class="cov0" title="0">
+                return "BLACK_ROOK_KING"</span>
+        case BLACK_KNIGHT_QUEEN:<span class="cov0" title="0">
+                return "BLACK_KNIGHT_QUEEN"</span>
+        case BLACK_KNIGHT_KING:<span class="cov0" title="0">
+                return "BLACK_KNIGHT_KING"</span>
+        case BLACK_BISHOP_QUEEN:<span class="cov0" title="0">
+                return "BLACK_BISHOP_QUEEN"</span>
+        case BLACK_BISHOP_KING:<span class="cov0" title="0">
+                return "BLACK_BISHOP_KING"</span>
+        case BLACK_QUEEN:<span class="cov0" title="0">
+                return "BLACK_QUEEN"</span>
+        case BLACK_KING:<span class="cov0" title="0">
+                return "BLACK_KING"</span>
+        }
+
+        <span class="cov0" title="0">panic("unknow piece")</span>
+}
+</pre>
+		
+		<pre class="file" id="file2" style="display: none">package board
+
+type SquareName int64
+
+const (
+        A1 SquareName = iota
+        A2
+        A3
+        A4
+        A5
+        A6
+        A7
+        A8
+
+        B1
+        B2
+        B3
+        B4
+        B5
+        B6
+        B7
+        B8
+
+        C1
+        C2
+        C3
+        C4
+        C5
+        C6
+        C7
+        C8
+
+        D1
+        D2
+        D3
+        D4
+        D5
+        D6
+        D7
+        D8
+
+        E1
+        E2
+        E3
+        E4
+        E5
+        E6
+        E7
+        E8
+
+        F1
+        F2
+        F3
+        F4
+        F5
+        F6
+        F7
+        F8
+
+        G1
+        G2
+        G3
+        G4
+        G5
+        G6
+        G7
+        G8
+
+        H1
+        H2
+        H3
+        H4
+        H5
+        H6
+        H7
+        H8
+)
+
+func GetCoordinatesBySquareName(n SquareName) (lin, col int) <span class="cov8" title="1">{
+        switch n </span>{
+        case A1:<span class="cov8" title="1">
+                return 0, 0</span>
+        case A2:<span class="cov8" title="1">
+                return 1, 0</span>
+        case A3:<span class="cov8" title="1">
+                return 2, 0</span>
+        case A4:<span class="cov8" title="1">
+                return 3, 0</span>
+        case A5:<span class="cov8" title="1">
+                return 4, 0</span>
+        case A6:<span class="cov8" title="1">
+                return 5, 0</span>
+        case A7:<span class="cov8" title="1">
+                return 6, 0</span>
+        case A8:<span class="cov8" title="1">
+                return 7, 0</span>
+
+        case B1:<span class="cov8" title="1">
+                return 0, 1</span>
+        case B2:<span class="cov8" title="1">
+                return 1, 1</span>
+        case B3:<span class="cov8" title="1">
+                return 2, 1</span>
+        case B4:<span class="cov8" title="1">
+                return 3, 1</span>
+        case B5:<span class="cov8" title="1">
+                return 4, 1</span>
+        case B6:<span class="cov8" title="1">
+                return 5, 1</span>
+        case B7:<span class="cov8" title="1">
+                return 6, 1</span>
+        case B8:<span class="cov8" title="1">
+                return 7, 1</span>
+
+        case C1:<span class="cov8" title="1">
+                return 0, 2</span>
+        case C2:<span class="cov8" title="1">
+                return 1, 2</span>
+        case C3:<span class="cov8" title="1">
+                return 2, 2</span>
+        case C4:<span class="cov8" title="1">
+                return 3, 2</span>
+        case C5:<span class="cov8" title="1">
+                return 4, 2</span>
+        case C6:<span class="cov8" title="1">
+                return 5, 2</span>
+        case C7:<span class="cov8" title="1">
+                return 6, 2</span>
+        case C8:<span class="cov8" title="1">
+                return 7, 2</span>
+
+        case D1:<span class="cov8" title="1">
+                return 0, 3</span>
+        case D2:<span class="cov8" title="1">
+                return 1, 3</span>
+        case D3:<span class="cov8" title="1">
+                return 2, 3</span>
+        case D4:<span class="cov8" title="1">
+                return 3, 3</span>
+        case D5:<span class="cov8" title="1">
+                return 4, 3</span>
+        case D6:<span class="cov8" title="1">
+                return 5, 3</span>
+        case D7:<span class="cov8" title="1">
+                return 6, 3</span>
+        case D8:<span class="cov8" title="1">
+                return 7, 3</span>
+
+        case E1:<span class="cov8" title="1">
+                return 0, 4</span>
+        case E2:<span class="cov8" title="1">
+                return 1, 4</span>
+        case E3:<span class="cov8" title="1">
+                return 2, 4</span>
+        case E4:<span class="cov8" title="1">
+                return 3, 4</span>
+        case E5:<span class="cov8" title="1">
+                return 4, 4</span>
+        case E6:<span class="cov8" title="1">
+                return 5, 4</span>
+        case E7:<span class="cov8" title="1">
+                return 6, 4</span>
+        case E8:<span class="cov8" title="1">
+                return 7, 4</span>
+
+        case F1:<span class="cov8" title="1">
+                return 0, 5</span>
+        case F2:<span class="cov8" title="1">
+                return 1, 5</span>
+        case F3:<span class="cov8" title="1">
+                return 2, 5</span>
+        case F4:<span class="cov8" title="1">
+                return 3, 5</span>
+        case F5:<span class="cov8" title="1">
+                return 4, 5</span>
+        case F6:<span class="cov8" title="1">
+                return 5, 5</span>
+        case F7:<span class="cov8" title="1">
+                return 6, 5</span>
+        case F8:<span class="cov8" title="1">
+                return 7, 5</span>
+
+        case G1:<span class="cov8" title="1">
+                return 0, 6</span>
+        case G2:<span class="cov8" title="1">
+                return 1, 6</span>
+        case G3:<span class="cov8" title="1">
+                return 2, 6</span>
+        case G4:<span class="cov8" title="1">
+                return 3, 6</span>
+        case G5:<span class="cov8" title="1">
+                return 4, 6</span>
+        case G6:<span class="cov8" title="1">
+                return 5, 6</span>
+        case G7:<span class="cov8" title="1">
+                return 6, 6</span>
+        case G8:<span class="cov8" title="1">
+                return 7, 6</span>
+
+        case H1:<span class="cov8" title="1">
+                return 0, 7</span>
+        case H2:<span class="cov8" title="1">
+                return 1, 7</span>
+        case H3:<span class="cov8" title="1">
+                return 2, 7</span>
+        case H4:<span class="cov8" title="1">
+                return 3, 7</span>
+        case H5:<span class="cov8" title="1">
+                return 4, 7</span>
+        case H6:<span class="cov8" title="1">
+                return 5, 7</span>
+        case H7:<span class="cov8" title="1">
+                return 6, 7</span>
+        case H8:<span class="cov8" title="1">
+                return 7, 7</span>
+        }
+
+        <span class="cov0" title="0">panic("Unknown square name")</span>
+}
+
+func (n SquareName) String() string <span class="cov0" title="0">{
+        switch n </span>{
+        case A1:<span class="cov0" title="0">
+                return "A1"</span>
+        case A2:<span class="cov0" title="0">
+                return "A2"</span>
+        case A3:<span class="cov0" title="0">
+                return "A3"</span>
+        case A4:<span class="cov0" title="0">
+                return "A4"</span>
+        case A5:<span class="cov0" title="0">
+                return "A5"</span>
+        case A6:<span class="cov0" title="0">
+                return "A6"</span>
+        case A7:<span class="cov0" title="0">
+                return "A7"</span>
+        case A8:<span class="cov0" title="0">
+                return "A8"</span>
+
+        case B1:<span class="cov0" title="0">
+                return "B1"</span>
+        case B2:<span class="cov0" title="0">
+                return "B2"</span>
+        case B3:<span class="cov0" title="0">
+                return "B3"</span>
+        case B4:<span class="cov0" title="0">
+                return "B4"</span>
+        case B5:<span class="cov0" title="0">
+                return "B5"</span>
+        case B6:<span class="cov0" title="0">
+                return "B6"</span>
+        case B7:<span class="cov0" title="0">
+                return "B7"</span>
+        case B8:<span class="cov0" title="0">
+                return "B8"</span>
+
+        case C1:<span class="cov0" title="0">
+                return "C1"</span>
+        case C2:<span class="cov0" title="0">
+                return "C2"</span>
+        case C3:<span class="cov0" title="0">
+                return "C3"</span>
+        case C4:<span class="cov0" title="0">
+                return "C4"</span>
+        case C5:<span class="cov0" title="0">
+                return "C5"</span>
+        case C6:<span class="cov0" title="0">
+                return "C6"</span>
+        case C7:<span class="cov0" title="0">
+                return "C7"</span>
+        case C8:<span class="cov0" title="0">
+                return "C8"</span>
+
+        case D1:<span class="cov0" title="0">
+                return "D1"</span>
+        case D2:<span class="cov0" title="0">
+                return "D2"</span>
+        case D3:<span class="cov0" title="0">
+                return "D3"</span>
+        case D4:<span class="cov0" title="0">
+                return "D4"</span>
+        case D5:<span class="cov0" title="0">
+                return "D5"</span>
+        case D6:<span class="cov0" title="0">
+                return "D6"</span>
+        case D7:<span class="cov0" title="0">
+                return "D7"</span>
+        case D8:<span class="cov0" title="0">
+                return "D8"</span>
+
+        case E1:<span class="cov0" title="0">
+                return "E1"</span>
+        case E2:<span class="cov0" title="0">
+                return "E2"</span>
+        case E3:<span class="cov0" title="0">
+                return "E3"</span>
+        case E4:<span class="cov0" title="0">
+                return "E4"</span>
+        case E5:<span class="cov0" title="0">
+                return "E5"</span>
+        case E6:<span class="cov0" title="0">
+                return "E6"</span>
+        case E7:<span class="cov0" title="0">
+                return "E7"</span>
+        case E8:<span class="cov0" title="0">
+                return "E8"</span>
+
+        case F1:<span class="cov0" title="0">
+                return "F1"</span>
+        case F2:<span class="cov0" title="0">
+                return "F2"</span>
+        case F3:<span class="cov0" title="0">
+                return "F3"</span>
+        case F4:<span class="cov0" title="0">
+                return "F4"</span>
+        case F5:<span class="cov0" title="0">
+                return "F5"</span>
+        case F6:<span class="cov0" title="0">
+                return "F6"</span>
+        case F7:<span class="cov0" title="0">
+                return "F7"</span>
+        case F8:<span class="cov0" title="0">
+                return "F8"</span>
+
+        case G1:<span class="cov0" title="0">
+                return "G1"</span>
+        case G2:<span class="cov0" title="0">
+                return "G2"</span>
+        case G3:<span class="cov0" title="0">
+                return "G3"</span>
+        case G4:<span class="cov0" title="0">
+                return "G4"</span>
+        case G5:<span class="cov0" title="0">
+                return "G5"</span>
+        case G6:<span class="cov0" title="0">
+                return "G6"</span>
+        case G7:<span class="cov0" title="0">
+                return "G7"</span>
+        case G8:<span class="cov0" title="0">
+                return "G8"</span>
+
+        case H1:<span class="cov0" title="0">
+                return "H1"</span>
+        case H2:<span class="cov0" title="0">
+                return "H2"</span>
+        case H3:<span class="cov0" title="0">
+                return "H3"</span>
+        case H4:<span class="cov0" title="0">
+                return "H4"</span>
+        case H5:<span class="cov0" title="0">
+                return "H5"</span>
+        case H6:<span class="cov0" title="0">
+                return "H6"</span>
+        case H7:<span class="cov0" title="0">
+                return "H7"</span>
+        case H8:<span class="cov0" title="0">
+                return "H8"</span>
+        }
+
+        <span class="cov0" title="0">panic("Unknown square name")</span>
+}
+</pre>
+		
+		<pre class="file" id="file3" style="display: none">package rules
+
+import "github.com/joesantos418/joe-chess/pkg/board"
+
+func isColorsTurn(p board.Piece, g *Game) bool <span class="cov8" title="1">{
+        return (isPieceWhite(p) &amp;&amp; g.NowPlays == WHITES) || (isPieceBlack(p) &amp;&amp; g.NowPlays == BLACKS)
+}</span>
+
+func isPieceWhite(p board.Piece) bool <span class="cov8" title="1">{
+        return p == board.WHITE_PAWN_A ||
+                p == board.WHITE_PAWN_B ||
+                p == board.WHITE_PAWN_C ||
+                p == board.WHITE_PAWN_D ||
+                p == board.WHITE_PAWN_E ||
+                p == board.WHITE_PAWN_F ||
+                p == board.WHITE_PAWN_G ||
+                p == board.WHITE_PAWN_H ||
+                p == board.WHITE_ROOK_QUEEN ||
+                p == board.WHITE_ROOK_KING ||
+                p == board.WHITE_KNIGHT_QUEEN ||
+                p == board.WHITE_KNIGHT_KING ||
+                p == board.WHITE_BISHOP_QUEEN ||
+                p == board.WHITE_BISHOP_KING ||
+                p == board.WHITE_QUEEN ||
+                p == board.WHITE_KING
+}</span>
+
+func isPieceBlack(p board.Piece) bool <span class="cov8" title="1">{
+        return p == board.BLACK_PAWN_A ||
+                p == board.BLACK_PAWN_B ||
+                p == board.BLACK_PAWN_C ||
+                p == board.BLACK_PAWN_D ||
+                p == board.BLACK_PAWN_E ||
+                p == board.BLACK_PAWN_F ||
+                p == board.BLACK_PAWN_G ||
+                p == board.BLACK_PAWN_H ||
+                p == board.BLACK_ROOK_QUEEN ||
+                p == board.BLACK_ROOK_KING ||
+                p == board.BLACK_KNIGHT_QUEEN ||
+                p == board.BLACK_KNIGHT_KING ||
+                p == board.BLACK_BISHOP_QUEEN ||
+                p == board.BLACK_BISHOP_KING ||
+                p == board.BLACK_QUEEN ||
+                p == board.BLACK_KING
+}</span>
+</pre>
+		
+		<pre class="file" id="file4" style="display: none">package rules
+
+import (
+        "math"
+
+        "github.com/joesantos418/joe-chess/pkg/board"
+)
+
+func isMoveCorrect(p board.Piece, from, to board.SquareName, g *Game) bool <span class="cov8" title="1">{
+        if from == to </span><span class="cov8" title="1">{
+                return true
+        }</span>
+
+        <span class="cov8" title="1">switch p </span>{
+        case board.WHITE_PAWN_A:<span class="cov8" title="1">
+                return isCorrectForWhitePawn(p, from, to, g)</span>
+        case board.WHITE_PAWN_B:<span class="cov8" title="1">
+                return isCorrectForWhitePawn(p, from, to, g)</span>
+        case board.WHITE_PAWN_C:<span class="cov8" title="1">
+                return isCorrectForWhitePawn(p, from, to, g)</span>
+        case board.WHITE_PAWN_D:<span class="cov8" title="1">
+                return isCorrectForWhitePawn(p, from, to, g)</span>
+        case board.WHITE_PAWN_E:<span class="cov8" title="1">
+                return isCorrectForWhitePawn(p, from, to, g)</span>
+        case board.WHITE_PAWN_F:<span class="cov8" title="1">
+                return isCorrectForWhitePawn(p, from, to, g)</span>
+        case board.WHITE_PAWN_G:<span class="cov8" title="1">
+                return isCorrectForWhitePawn(p, from, to, g)</span>
+        case board.WHITE_PAWN_H:<span class="cov8" title="1">
+                return isCorrectForWhitePawn(p, from, to, g)</span>
+
+        case board.BLACK_PAWN_A:<span class="cov8" title="1">
+                return isCorrectForBlackPawn(p, from, to, g)</span>
+        case board.BLACK_PAWN_B:<span class="cov8" title="1">
+                return isCorrectForBlackPawn(p, from, to, g)</span>
+        case board.BLACK_PAWN_C:<span class="cov8" title="1">
+                return isCorrectForBlackPawn(p, from, to, g)</span>
+        case board.BLACK_PAWN_D:<span class="cov8" title="1">
+                return isCorrectForBlackPawn(p, from, to, g)</span>
+        case board.BLACK_PAWN_E:<span class="cov8" title="1">
+                return isCorrectForBlackPawn(p, from, to, g)</span>
+        case board.BLACK_PAWN_F:<span class="cov8" title="1">
+                return isCorrectForBlackPawn(p, from, to, g)</span>
+        case board.BLACK_PAWN_G:<span class="cov8" title="1">
+                return isCorrectForBlackPawn(p, from, to, g)</span>
+        case board.BLACK_PAWN_H:<span class="cov8" title="1">
+                return isCorrectForBlackPawn(p, from, to, g)</span>
+
+        case board.WHITE_ROOK_QUEEN:<span class="cov8" title="1">
+                return isCorrectForRook(from, to, g)</span>
+        case board.WHITE_ROOK_KING:<span class="cov8" title="1">
+                return isCorrectForRook(from, to, g)</span>
+        case board.BLACK_ROOK_QUEEN:<span class="cov8" title="1">
+                return isCorrectForRook(from, to, g)</span>
+        case board.BLACK_ROOK_KING:<span class="cov8" title="1">
+                return isCorrectForRook(from, to, g)</span>
+
+        case board.BLACK_KNIGHT_QUEEN:<span class="cov8" title="1">
+                return isCorrectForKnight(from, to, g)</span>
+        case board.BLACK_KNIGHT_KING:<span class="cov8" title="1">
+                return isCorrectForKnight(from, to, g)</span>
+        case board.WHITE_KNIGHT_QUEEN:<span class="cov8" title="1">
+                return isCorrectForKnight(from, to, g)</span>
+        case board.WHITE_KNIGHT_KING:<span class="cov8" title="1">
+                return isCorrectForKnight(from, to, g)</span>
+
+        case board.BLACK_BISHOP_QUEEN:<span class="cov8" title="1">
+                return isCorrectForBishop(from, to, g)</span>
+        case board.BLACK_BISHOP_KING:<span class="cov8" title="1">
+                return isCorrectForBishop(from, to, g)</span>
+        case board.WHITE_BISHOP_QUEEN:<span class="cov8" title="1">
+                return isCorrectForBishop(from, to, g)</span>
+        case board.WHITE_BISHOP_KING:<span class="cov8" title="1">
+                return isCorrectForBishop(from, to, g)</span>
+
+        case board.BLACK_QUEEN:<span class="cov8" title="1">
+                return isCorrectForQueen(from, to, g)</span>
+        case board.WHITE_QUEEN:<span class="cov8" title="1">
+                return isCorrectForQueen(from, to, g)</span>
+
+        case board.BLACK_KING:<span class="cov8" title="1">
+                return isCorrectForKing(from, to, g)</span>
+        case board.WHITE_KING:<span class="cov8" title="1">
+                return isCorrectForKing(from, to, g)</span>
+
+        }
+
+        <span class="cov8" title="1">return false</span>
+}
+
+func isCorrectForWhitePawn(p board.Piece, from, to board.SquareName, g *Game) bool <span class="cov8" title="1">{
+        if isCapture(p, to, g) </span><span class="cov8" title="1">{
+                return isDiagonalUpOne(from, to)
+        }</span> else<span class="cov8" title="1"> {
+                if isFirstSquareForWhitePawn(from) </span><span class="cov8" title="1">{
+                        return isVerticalUpOne(from, to) || isVerticalUpTwo(from, to)
+                }</span> else<span class="cov8" title="1"> {
+                        return isVerticalUpOne(from, to)
+                }</span>
+        }
+}
+
+func isCorrectForBlackPawn(p board.Piece, from, to board.SquareName, g *Game) bool <span class="cov8" title="1">{
+        if isCapture(p, to, g) </span><span class="cov8" title="1">{
+                return isDiagonalDownOne(from, to)
+        }</span> else<span class="cov8" title="1"> {
+                if isFirstSquareForBlackPawn(from) </span><span class="cov8" title="1">{
+                        return isVerticalDownOne(from, to) || isVerticalDownTwo(from, to)
+                }</span> else<span class="cov8" title="1"> {
+                        return isVerticalDownOne(from, to)
+                }</span>
+        }
+}
+
+func isCorrectForRook(from, to board.SquareName, g *Game) bool <span class="cov8" title="1">{
+        return isVerticalN(from, to) || isHorizontalN(from, to)
+}</span>
+
+func isCorrectForKnight(from, to board.SquareName, g *Game) bool <span class="cov8" title="1">{
+        return isL(from, to)
+}</span>
+
+func isCorrectForBishop(from, to board.SquareName, g *Game) bool <span class="cov8" title="1">{
+        return isDiagonalN(from, to)
+}</span>
+
+func isCorrectForQueen(from, to board.SquareName, g *Game) bool <span class="cov8" title="1">{
+        return isDiagonalN(from, to) || isVerticalN(from, to) || isHorizontalN(from, to)
+}</span>
+
+func isCorrectForKing(from, to board.SquareName, g *Game) bool <span class="cov8" title="1">{
+        return isVerticalOne(from, to) || isHorizontalOne(from, to) || isDiagonalOne(from, to)
+}</span>
+
+func isCapture(p board.Piece, to board.SquareName, g *Game) bool <span class="cov8" title="1">{
+        if isPieceWhite(p) </span><span class="cov8" title="1">{
+                return isPieceBlack(g.Board.GetPiece(to))
+        }</span> else<span class="cov8" title="1"> if isPieceBlack(p) </span><span class="cov8" title="1">{
+                return isPieceWhite(g.Board.GetPiece(to))
+        }</span>
+
+        <span class="cov0" title="0">return false</span>
+}
+
+func isDiagonalUpOne(from, to board.SquareName) bool <span class="cov8" title="1">{
+        lf, cf := board.GetCoordinatesBySquareName(from)
+        lt, ct := board.GetCoordinatesBySquareName(to)
+
+        return (lt-lf == 1) &amp;&amp; (math.Abs(float64(ct-cf)) == 1)
+}</span>
+
+func isFirstSquareForWhitePawn(s board.SquareName) bool <span class="cov8" title="1">{
+        return s == board.A2 ||
+                s == board.B2 ||
+                s == board.C2 ||
+                s == board.D2 ||
+                s == board.E2 ||
+                s == board.F2 ||
+                s == board.G2 ||
+                s == board.H2
+}</span>
+
+func isVerticalUpOne(from, to board.SquareName) bool <span class="cov8" title="1">{
+        lf, cf := board.GetCoordinatesBySquareName(from)
+        lt, ct := board.GetCoordinatesBySquareName(to)
+
+        return (lt-lf == 1) &amp;&amp; (ct-cf == 0)
+}</span>
+
+func isVerticalUpTwo(from, to board.SquareName) bool <span class="cov8" title="1">{
+        lf, cf := board.GetCoordinatesBySquareName(from)
+        lt, ct := board.GetCoordinatesBySquareName(to)
+
+        return (lt-lf == 2) &amp;&amp; (ct-cf == 0)
+}</span>
+
+func isDiagonalDownOne(from, to board.SquareName) bool <span class="cov8" title="1">{
+        lf, cf := board.GetCoordinatesBySquareName(from)
+        lt, ct := board.GetCoordinatesBySquareName(to)
+
+        return (lt-lf == -1) &amp;&amp; (math.Abs(float64(ct-cf)) == 1)
+}</span>
+
+func isFirstSquareForBlackPawn(s board.SquareName) bool <span class="cov8" title="1">{
+        return s == board.A7 ||
+                s == board.B7 ||
+                s == board.C7 ||
+                s == board.D7 ||
+                s == board.E7 ||
+                s == board.F7 ||
+                s == board.G7 ||
+                s == board.H7
+}</span>
+
+func isVerticalDownOne(from, to board.SquareName) bool <span class="cov8" title="1">{
+        lf, cf := board.GetCoordinatesBySquareName(from)
+        lt, ct := board.GetCoordinatesBySquareName(to)
+
+        return (lt-lf == -1) &amp;&amp; (ct-cf == 0)
+}</span>
+
+func isVerticalDownTwo(from, to board.SquareName) bool <span class="cov8" title="1">{
+        lf, cf := board.GetCoordinatesBySquareName(from)
+        lt, ct := board.GetCoordinatesBySquareName(to)
+
+        return (lt-lf == -2) &amp;&amp; (ct-cf == 0)
+}</span>
+
+func isL(from, to board.SquareName) bool <span class="cov8" title="1">{
+        lf, cf := board.GetCoordinatesBySquareName(from)
+        lt, ct := board.GetCoordinatesBySquareName(to)
+
+        return (math.Abs(float64(lt-lf)) == 2 &amp;&amp; math.Abs(float64(ct-cf)) == 1) ||
+                (math.Abs(float64(lt-lf)) == 1 &amp;&amp; math.Abs(float64(ct-cf)) == 2)
+
+}</span>
+
+func isVerticalOne(from, to board.SquareName) bool <span class="cov8" title="1">{
+        lf, cf := board.GetCoordinatesBySquareName(from)
+        lt, ct := board.GetCoordinatesBySquareName(to)
+
+        return (math.Abs(float64(lt-lf)) == 1 &amp;&amp; ct-cf == 0)
+}</span>
+
+func isHorizontalOne(from, to board.SquareName) bool <span class="cov8" title="1">{
+        lf, cf := board.GetCoordinatesBySquareName(from)
+        lt, ct := board.GetCoordinatesBySquareName(to)
+
+        return (math.Abs(float64(ct-cf)) == 1 &amp;&amp; lt-lf == 0)
+}</span>
+
+func isDiagonalOne(from, to board.SquareName) bool <span class="cov8" title="1">{
+        lf, cf := board.GetCoordinatesBySquareName(from)
+        lt, ct := board.GetCoordinatesBySquareName(to)
+
+        return (math.Abs(float64(lt-lf)) == 1 &amp;&amp; math.Abs(float64(ct-cf)) == 1)
+}</span>
+
+func isVerticalN(from, to board.SquareName) bool <span class="cov8" title="1">{
+        _, cf := board.GetCoordinatesBySquareName(from)
+        _, ct := board.GetCoordinatesBySquareName(to)
+
+        return cf == ct
+}</span>
+
+func isHorizontalN(from, to board.SquareName) bool <span class="cov8" title="1">{
+        lf, _ := board.GetCoordinatesBySquareName(from)
+        lt, _ := board.GetCoordinatesBySquareName(to)
+
+        return lf == lt
+}</span>
+
+func isDiagonalN(from, to board.SquareName) bool <span class="cov8" title="1">{
+        lf, cf := board.GetCoordinatesBySquareName(from)
+        lt, ct := board.GetCoordinatesBySquareName(to)
+
+        return math.Abs(float64(lt-lf)) == math.Abs(float64(ct-cf))
+}</span>
+</pre>
+		
+		<pre class="file" id="file5" style="display: none">package rules
+
+import (
+        "math"
+
+        "github.com/joesantos418/joe-chess/pkg/board"
+)
+
+func isMoveFree(p board.Piece, from, to board.SquareName, g *Game) bool <span class="cov8" title="1">{
+        if g.Board.GetPiece(to) != board.NO_PIECE </span><span class="cov8" title="1">{
+                if !isCapture(p, to, g) </span><span class="cov8" title="1">{
+                        return false
+                }</span>
+        }
+
+        <span class="cov8" title="1">switch p </span>{
+        case board.WHITE_PAWN_A:<span class="cov8" title="1">
+                return isFreeForPawn(from, to, g)</span>
+        case board.WHITE_PAWN_B:<span class="cov8" title="1">
+                return isFreeForPawn(from, to, g)</span>
+        case board.WHITE_PAWN_C:<span class="cov8" title="1">
+                return isFreeForPawn(from, to, g)</span>
+        case board.WHITE_PAWN_D:<span class="cov8" title="1">
+                return isFreeForPawn(from, to, g)</span>
+        case board.WHITE_PAWN_E:<span class="cov8" title="1">
+                return isFreeForPawn(from, to, g)</span>
+        case board.WHITE_PAWN_F:<span class="cov8" title="1">
+                return isFreeForPawn(from, to, g)</span>
+        case board.WHITE_PAWN_G:<span class="cov8" title="1">
+                return isFreeForPawn(from, to, g)</span>
+        case board.WHITE_PAWN_H:<span class="cov8" title="1">
+                return isFreeForPawn(from, to, g)</span>
+        case board.BLACK_PAWN_A:<span class="cov8" title="1">
+                return isFreeForPawn(from, to, g)</span>
+        case board.BLACK_PAWN_B:<span class="cov8" title="1">
+                return isFreeForPawn(from, to, g)</span>
+        case board.BLACK_PAWN_C:<span class="cov8" title="1">
+                return isFreeForPawn(from, to, g)</span>
+        case board.BLACK_PAWN_D:<span class="cov8" title="1">
+                return isFreeForPawn(from, to, g)</span>
+        case board.BLACK_PAWN_E:<span class="cov8" title="1">
+                return isFreeForPawn(from, to, g)</span>
+        case board.BLACK_PAWN_F:<span class="cov8" title="1">
+                return isFreeForPawn(from, to, g)</span>
+        case board.BLACK_PAWN_G:<span class="cov8" title="1">
+                return isFreeForPawn(from, to, g)</span>
+        case board.BLACK_PAWN_H:<span class="cov8" title="1">
+                return isFreeForPawn(from, to, g)</span>
+
+        case board.WHITE_ROOK_QUEEN:<span class="cov8" title="1">
+                return isFreeForRook(from, to, g)</span>
+        case board.WHITE_ROOK_KING:<span class="cov8" title="1">
+                return isFreeForRook(from, to, g)</span>
+        case board.BLACK_ROOK_QUEEN:<span class="cov8" title="1">
+                return isFreeForRook(from, to, g)</span>
+        case board.BLACK_ROOK_KING:<span class="cov8" title="1">
+                return isFreeForRook(from, to, g)</span>
+
+        case board.BLACK_KNIGHT_QUEEN:<span class="cov8" title="1">
+                return isFreeForKnight(from, to, g)</span>
+        case board.BLACK_KNIGHT_KING:<span class="cov8" title="1">
+                return isFreeForKnight(from, to, g)</span>
+        case board.WHITE_KNIGHT_QUEEN:<span class="cov8" title="1">
+                return isFreeForKnight(from, to, g)</span>
+        case board.WHITE_KNIGHT_KING:<span class="cov8" title="1">
+                return isFreeForKnight(from, to, g)</span>
+
+        case board.BLACK_BISHOP_QUEEN:<span class="cov8" title="1">
+                return isFreeForBishop(from, to, g)</span>
+        case board.BLACK_BISHOP_KING:<span class="cov8" title="1">
+                return isFreeForBishop(from, to, g)</span>
+        case board.WHITE_BISHOP_QUEEN:<span class="cov8" title="1">
+                return isFreeForBishop(from, to, g)</span>
+        case board.WHITE_BISHOP_KING:<span class="cov8" title="1">
+                return isFreeForBishop(from, to, g)</span>
+
+        case board.BLACK_QUEEN:<span class="cov8" title="1">
+                return isFreeForQueen(from, to, g)</span>
+        case board.WHITE_QUEEN:<span class="cov8" title="1">
+                return isFreeForQueen(from, to, g)</span>
+
+        case board.BLACK_KING:<span class="cov8" title="1">
+                return isFreeForKing(from, to, g)</span>
+        case board.WHITE_KING:<span class="cov8" title="1">
+                return isFreeForKing(from, to, g)</span>
+
+        }
+
+        <span class="cov0" title="0">return false</span>
+}
+
+func isFreeForPawn(from, to board.SquareName, g *Game) bool <span class="cov8" title="1">{
+        lf, cf := board.GetCoordinatesBySquareName(from)
+        lt, ct := board.GetCoordinatesBySquareName(to)
+
+        return isVertical(lf, cf, lt, ct) &amp;&amp; isFreeVertical(cf, lf, lt, g)
+}</span>
+
+func isFreeForRook(from, to board.SquareName, g *Game) bool <span class="cov8" title="1">{
+        lf, cf := board.GetCoordinatesBySquareName(from)
+        lt, ct := board.GetCoordinatesBySquareName(to)
+
+        return (isVertical(lf, cf, lt, ct) &amp;&amp; isFreeVertical(cf, lf, lt, g)) ||
+                (isHorizontal(lf, cf, lt, ct) &amp;&amp; isFreeHorizontal(lf, cf, ct, g))
+}</span>
+
+func isFreeForKnight(from, to board.SquareName, g *Game) bool <span class="cov8" title="1">{
+        return true
+}</span>
+
+func isFreeForBishop(from, to board.SquareName, g *Game) bool <span class="cov8" title="1">{
+        lf, cf := board.GetCoordinatesBySquareName(from)
+        lt, ct := board.GetCoordinatesBySquareName(to)
+
+        return isDiagonal(lf, cf, lt, ct) &amp;&amp; isFreeDiagonal(lf, cf, lt, ct, g)
+}</span>
+
+func isFreeForQueen(from, to board.SquareName, g *Game) bool <span class="cov8" title="1">{
+        lf, cf := board.GetCoordinatesBySquareName(from)
+        lt, ct := board.GetCoordinatesBySquareName(to)
+
+        return (isVertical(lf, cf, lt, ct) &amp;&amp; isFreeVertical(cf, lf, lt, g)) ||
+                (isHorizontal(lf, cf, lt, ct) &amp;&amp; isFreeHorizontal(lf, cf, ct, g)) ||
+                (isDiagonal(lf, cf, lt, ct) &amp;&amp; isFreeDiagonal(lf, cf, lt, ct, g))
+}</span>
+
+func isFreeForKing(from, to board.SquareName, g *Game) bool <span class="cov8" title="1">{
+        lf, cf := board.GetCoordinatesBySquareName(from)
+        lt, ct := board.GetCoordinatesBySquareName(to)
+
+        return (isVertical(lf, cf, lt, ct) &amp;&amp; isFreeVertical(cf, lf, lt, g)) ||
+                (isHorizontal(lf, cf, lt, ct) &amp;&amp; isFreeHorizontal(lf, cf, ct, g)) ||
+                (isDiagonal(lf, cf, lt, ct) &amp;&amp; isFreeDiagonal(lf, cf, lt, ct, g))
+}</span>
+
+func isVertical(lf, cf, lt, ct int) bool <span class="cov8" title="1">{
+        return cf == ct &amp;&amp; lf != lt
+}</span>
+
+func isHorizontal(lf, cf, lt, ct int) bool <span class="cov8" title="1">{
+        return cf != ct &amp;&amp; lf == lt
+}</span>
+
+func isDiagonal(lf, cf, lt, ct int) bool <span class="cov8" title="1">{
+        return math.Abs(float64(ct-cf)) == math.Abs(float64(lt-lf))
+}</span>
+
+func isFreeVertical(col, from, to int, g *Game) bool <span class="cov8" title="1">{
+        f := from
+        t := to
+        if from &gt; to </span><span class="cov8" title="1">{
+                f = to
+                t = from
+        }</span>
+
+        <span class="cov8" title="1">for i := f + 1; i &lt; t; i++ </span><span class="cov8" title="1">{
+                if g.Board.Squares[i][col].Piece != board.NO_PIECE </span><span class="cov8" title="1">{
+                        return false
+                }</span>
+        }
+
+        <span class="cov8" title="1">return true</span>
+}
+
+func isFreeHorizontal(lin, from, to int, g *Game) bool <span class="cov8" title="1">{
+        f := from
+        t := to
+        if from &gt; to </span><span class="cov8" title="1">{
+                f = to
+                t = from
+        }</span>
+
+        <span class="cov8" title="1">for i := f + 1; i &lt; t; i++ </span><span class="cov8" title="1">{
+                if g.Board.Squares[lin][i].Piece != board.NO_PIECE </span><span class="cov8" title="1">{
+                        return false
+                }</span>
+        }
+
+        <span class="cov8" title="1">return true</span>
+}
+
+func isFreeDiagonal(lf, cf, lt, ct int, g *Game) bool <span class="cov8" title="1">{
+        if lt &gt; lf </span><span class="cov8" title="1">{
+                if ct &gt; cf </span><span class="cov8" title="1">{
+                        return isFreeDiagonalNE(lf, cf, lt, g)
+                }</span> else<span class="cov8" title="1"> {
+                        return isFreeDiagonalNW(lf, cf, lt, g)
+                }</span>
+        } else<span class="cov8" title="1"> {
+                if ct &gt; cf </span><span class="cov8" title="1">{
+                        return isFreeDiagonalSE(lf, cf, lt, g)
+                }</span> else<span class="cov8" title="1"> {
+                        return isFreeDiagonalSW(lf, cf, lt, g)
+                }</span>
+        }
+}
+
+func isFreeDiagonalNE(lf, cf, lt int, g *Game) bool <span class="cov8" title="1">{
+        steps := lt - lf
+        for i := 1; i &lt; steps; i++ </span><span class="cov8" title="1">{
+                if g.Board.Squares[lf+i][cf+i].Piece != board.NO_PIECE </span><span class="cov8" title="1">{
+                        return false
+                }</span>
+        }
+
+        <span class="cov8" title="1">return true</span>
+}
+
+func isFreeDiagonalNW(lf, cf, lt int, g *Game) bool <span class="cov8" title="1">{
+        steps := lt - lf
+        for i := 1; i &lt; steps; i++ </span><span class="cov8" title="1">{
+                if g.Board.Squares[lf+i][cf-i].Piece != board.NO_PIECE </span><span class="cov8" title="1">{
+                        return false
+                }</span>
+        }
+
+        <span class="cov8" title="1">return true</span>
+}
+
+func isFreeDiagonalSE(lf, cf, lt int, g *Game) bool <span class="cov8" title="1">{
+        steps := lf - lt
+        for i := 1; i &lt; steps; i++ </span><span class="cov8" title="1">{
+                if g.Board.Squares[lf-i][cf+i].Piece != board.NO_PIECE </span><span class="cov8" title="1">{
+                        return false
+                }</span>
+        }
+
+        <span class="cov8" title="1">return true</span>
+}
+
+func isFreeDiagonalSW(lf, cf, lt int, g *Game) bool <span class="cov8" title="1">{
+        steps := lf - lt
+        for i := 1; i &lt; steps; i++ </span><span class="cov8" title="1">{
+                if g.Board.Squares[lf-i][cf-i].Piece != board.NO_PIECE </span><span class="cov8" title="1">{
+                        return false
+                }</span>
+        }
+
+        <span class="cov8" title="1">return true</span>
+}
+</pre>
+		
+		<pre class="file" id="file6" style="display: none">package rules
+
+import (
+        "math"
+
+        "github.com/joesantos418/joe-chess/pkg/board"
+)
+
+type direction int64
+
+const (
+        NE direction = iota
+        NW
+        SE
+        SW
+)
+
+func isKingInCheck(p board.Piece, from board.SquareName, to board.SquareName, g *Game) bool <span class="cov0" title="0">{
+        b := getClonedBoard(g)
+        b = simulateMove(p, from, to, b)
+        return checkKingInCheck(g, b)
+}</span>
+
+func getClonedBoard(g *Game) *board.Board <span class="cov0" title="0">{
+        return g.Board.Clone()
+}</span>
+
+func simulateMove(p board.Piece, from board.SquareName, to board.SquareName, b *board.Board) *board.Board <span class="cov0" title="0">{
+        err := b.Move(p, from, to)
+        if err != nil </span><span class="cov0" title="0">{
+                return &amp;board.Board{}
+        }</span>
+
+        <span class="cov0" title="0">return b</span>
+}
+
+func checkKingInCheck(g *Game, b *board.Board) bool <span class="cov0" title="0">{
+        if g.NowPlays == WHITES </span><span class="cov0" title="0">{
+                return isPieceInCheck(board.WHITE_KING, b)
+        }</span> else<span class="cov0" title="0"> {
+                return isPieceInCheck(board.BLACK_KING, b)
+        }</span>
+}
+
+func isPieceInCheck(p board.Piece, b *board.Board) bool <span class="cov0" title="0">{
+        lin, col := getCoordinates(p, b)
+        return isThreatenedVertical(p, lin, col, b) ||
+                isThreatenedHorizontal(p, lin, col, b) ||
+                isThreatenedDiagonal(p, lin, col, b) ||
+                isThreatenedL(p, lin, col, b)
+}</span>
+
+func getCoordinates(p board.Piece, b *board.Board) (int, int) <span class="cov0" title="0">{
+        for lin := 0; lin &lt; board.MAX_LIN; lin++ </span><span class="cov0" title="0">{
+                for col := 0; col &lt; board.MAX_COL; col++ </span><span class="cov0" title="0">{
+                        if b.Squares[lin][col].Piece == p </span><span class="cov0" title="0">{
+                                return lin, col
+                        }</span>
+                }
+        }
+
+        <span class="cov0" title="0">panic("could not find piece on the board")</span>
+}
+
+func isThreatenedVertical(p board.Piece, lin int, col int, b *board.Board) bool <span class="cov0" title="0">{
+        return isThreatenedUp(p, lin, col, b) || isThreatenedDown(p, lin, col, b)
+}</span>
+
+func isThreatenedHorizontal(p board.Piece, lin int, col int, b *board.Board) bool <span class="cov0" title="0">{
+        return isThreatenedRight(p, lin, col, b) || isThreatenedLeft(p, lin, col, b)
+}</span>
+
+func isThreatenedDiagonal(p board.Piece, lin int, col int, b *board.Board) bool <span class="cov0" title="0">{
+        return isThreatenedNE(p, lin, col, b) ||
+                isThreatenedNW(p, lin, col, b) ||
+                isThreatenedSE(p, lin, col, b) ||
+                isThreatenedSW(p, lin, col, b)
+}</span>
+
+func isThreatenedL(p board.Piece, lin, col int, b *board.Board) bool <span class="cov0" title="0">{
+        return isDangerL(p, lin+1, col+2, b) ||
+                isDangerL(p, lin+2, col+1, b) ||
+                isDangerL(p, lin-1, col+2, b) ||
+                isDangerL(p, lin-2, col+1, b) ||
+                isDangerL(p, lin+1, col-2, b) ||
+                isDangerL(p, lin+2, col-1, b) ||
+                isDangerL(p, lin-1, col-2, b) ||
+                isDangerL(p, lin-2, col-1, b)
+}</span>
+
+func isDangerL(p board.Piece, lin, col int, b *board.Board) bool <span class="cov0" title="0">{
+        if lin &lt; 0 || lin &gt; board.MAX_COL || col &lt; 0 || col &gt; board.MAX_COL </span><span class="cov0" title="0">{
+                return false
+        }</span>
+
+        <span class="cov0" title="0">return b.Squares[lin][col].Piece != board.NO_PIECE &amp;&amp;
+                getColor(p) != getColor(b.Squares[lin][col].Piece) &amp;&amp;
+                isLAttacker(b.Squares[lin][col].Piece)</span>
+}
+
+func isLAttacker(p board.Piece) bool <span class="cov0" title="0">{
+        return p == board.WHITE_KNIGHT_QUEEN ||
+                p == board.WHITE_KNIGHT_KING ||
+                p == board.BLACK_KNIGHT_QUEEN ||
+                p == board.BLACK_KNIGHT_KING
+}</span>
+
+func isThreatenedUp(p board.Piece, lin int, col int, b *board.Board) bool <span class="cov0" title="0">{
+        if lin == board.MAX_LIN </span><span class="cov0" title="0">{
+                return false
+        }</span>
+
+        <span class="cov0" title="0">for i := lin; i &lt; board.MAX_LIN; i++ </span><span class="cov0" title="0">{
+                if b.Squares[i][col].Piece != board.NO_PIECE </span><span class="cov0" title="0">{
+                        return isVerticalDanger(p, b.Squares[i][col].Piece, lin, i)
+                }</span>
+        }
+
+        <span class="cov0" title="0">return false</span>
+}
+
+func isThreatenedDown(p board.Piece, lin int, col int, b *board.Board) bool <span class="cov0" title="0">{
+        if lin == 0 </span><span class="cov0" title="0">{
+                return false
+        }</span>
+
+        <span class="cov0" title="0">for i := 0; i &lt; lin; i++ </span><span class="cov0" title="0">{
+                if b.Squares[i][col].Piece != board.NO_PIECE </span><span class="cov0" title="0">{
+                        return isVerticalDanger(p, b.Squares[i][col].Piece, lin, i)
+                }</span>
+        }
+
+        <span class="cov0" title="0">return false</span>
+}
+
+func isVerticalDanger(def, atk board.Piece, from int, to int) bool <span class="cov0" title="0">{
+        return getColor(def) != getColor(atk) &amp;&amp;
+                isAttackVertical(atk) &amp;&amp;
+                isInRangeForVerticalAttack(def, from, to)
+}</span>
+
+func isAttackVertical(p board.Piece) bool <span class="cov0" title="0">{
+        return p == board.WHITE_ROOK_QUEEN ||
+                p == board.WHITE_ROOK_KING ||
+                p == board.WHITE_QUEEN ||
+                p == board.WHITE_KING ||
+                p == board.BLACK_ROOK_QUEEN ||
+                p == board.BLACK_ROOK_KING ||
+                p == board.BLACK_QUEEN ||
+                p == board.BLACK_KING
+}</span>
+
+func isInRangeForVerticalAttack(p board.Piece, from, to int) bool <span class="cov0" title="0">{
+        switch p </span>{
+        case board.WHITE_ROOK_QUEEN:<span class="cov0" title="0">
+                return true</span>
+        case board.WHITE_ROOK_KING:<span class="cov0" title="0">
+                return true</span>
+        case board.WHITE_QUEEN:<span class="cov0" title="0">
+                return true</span>
+        case board.WHITE_KING:<span class="cov0" title="0">
+                return math.Abs(float64(to-from)) == 1</span>
+        case board.BLACK_ROOK_QUEEN:<span class="cov0" title="0">
+                return true</span>
+        case board.BLACK_ROOK_KING:<span class="cov0" title="0">
+                return true</span>
+        case board.BLACK_QUEEN:<span class="cov0" title="0">
+                return true</span>
+        case board.BLACK_KING:<span class="cov0" title="0">
+                return math.Abs(float64(to-from)) == 1</span>
+        default:<span class="cov0" title="0">
+                return false</span>
+        }
+}
+
+func isThreatenedRight(p board.Piece, lin int, col int, b *board.Board) bool <span class="cov0" title="0">{
+        if col == board.MAX_COL </span><span class="cov0" title="0">{
+                return false
+        }</span>
+
+        <span class="cov0" title="0">for i := col; i &lt; board.MAX_COL; i++ </span><span class="cov0" title="0">{
+                if b.Squares[i][col].Piece != board.NO_PIECE </span><span class="cov0" title="0">{
+                        return isHorizontalDanger(p, b.Squares[i][col].Piece, i, col)
+                }</span>
+        }
+
+        <span class="cov0" title="0">return false</span>
+}
+
+func isThreatenedLeft(p board.Piece, lin int, col int, b *board.Board) bool <span class="cov0" title="0">{
+        if col == 0 </span><span class="cov0" title="0">{
+                return false
+        }</span>
+
+        <span class="cov0" title="0">for i := 0; i &lt; col; i++ </span><span class="cov0" title="0">{
+                if b.Squares[i][col].Piece != board.NO_PIECE </span><span class="cov0" title="0">{
+                        return isHorizontalDanger(p, b.Squares[i][col].Piece, i, col)
+                }</span>
+        }
+
+        <span class="cov0" title="0">return false</span>
+}
+
+func isHorizontalDanger(def, atk board.Piece, from int, to int) bool <span class="cov0" title="0">{
+        return getColor(def) != getColor(atk) &amp;&amp;
+                isAttackHorizontal(atk) &amp;&amp;
+                isInRangeForHorizontalAttack(def, from, to)
+}</span>
+
+func isAttackHorizontal(p board.Piece) bool <span class="cov0" title="0">{
+        return p == board.WHITE_ROOK_QUEEN ||
+                p == board.WHITE_ROOK_KING ||
+                p == board.WHITE_QUEEN ||
+                p == board.WHITE_KING ||
+                p == board.BLACK_ROOK_QUEEN ||
+                p == board.BLACK_ROOK_KING ||
+                p == board.BLACK_QUEEN ||
+                p == board.BLACK_KING
+}</span>
+
+func isInRangeForHorizontalAttack(p board.Piece, from, to int) bool <span class="cov0" title="0">{
+        switch p </span>{
+        case board.WHITE_ROOK_QUEEN:<span class="cov0" title="0">
+                return true</span>
+        case board.WHITE_ROOK_KING:<span class="cov0" title="0">
+                return true</span>
+        case board.WHITE_QUEEN:<span class="cov0" title="0">
+                return true</span>
+        case board.WHITE_KING:<span class="cov0" title="0">
+                return math.Abs(float64(to-from)) == 1</span>
+        case board.BLACK_ROOK_QUEEN:<span class="cov0" title="0">
+                return true</span>
+        case board.BLACK_ROOK_KING:<span class="cov0" title="0">
+                return true</span>
+        case board.BLACK_QUEEN:<span class="cov0" title="0">
+                return true</span>
+        case board.BLACK_KING:<span class="cov0" title="0">
+                return math.Abs(float64(to-from)) == 1</span>
+        default:<span class="cov0" title="0">
+                return false</span>
+        }
+}
+
+func isThreatenedNE(p board.Piece, lin int, col int, b *board.Board) bool <span class="cov0" title="0">{
+        if lin == board.MAX_LIN &amp;&amp; col == board.MAX_COL </span><span class="cov0" title="0">{
+                return false
+        }</span>
+
+        <span class="cov0" title="0">for i := 0; i &lt; getMaxSteps(lin, col, NE); i++ </span><span class="cov0" title="0">{
+                if b.Squares[i][col].Piece != board.NO_PIECE </span><span class="cov0" title="0">{
+                        isDiagonalDanger(p, b.Squares[i][col].Piece, lin, col, lin+i, col+i)
+                }</span>
+        }
+
+        <span class="cov0" title="0">return false</span>
+}
+
+func isThreatenedNW(p board.Piece, lin int, col int, b *board.Board) bool <span class="cov0" title="0">{
+        if lin == board.MAX_LIN &amp;&amp; col == board.MAX_COL </span><span class="cov0" title="0">{
+                return false
+        }</span>
+
+        <span class="cov0" title="0">for i := 0; i &lt; getMaxSteps(lin, col, NW); i++ </span><span class="cov0" title="0">{
+                if b.Squares[i][col].Piece != board.NO_PIECE </span><span class="cov0" title="0">{
+                        isDiagonalDanger(p, b.Squares[i][col].Piece, lin, col, lin+i, col-i)
+                }</span>
+        }
+
+        <span class="cov0" title="0">return false</span>
+}
+
+func isThreatenedSE(p board.Piece, lin int, col int, b *board.Board) bool <span class="cov0" title="0">{
+        if lin == board.MAX_LIN &amp;&amp; col == board.MAX_COL </span><span class="cov0" title="0">{
+                return false
+        }</span>
+
+        <span class="cov0" title="0">for i := 0; i &lt; getMaxSteps(lin, col, SE); i++ </span><span class="cov0" title="0">{
+                if b.Squares[i][col].Piece != board.NO_PIECE </span><span class="cov0" title="0">{
+                        isDiagonalDanger(p, b.Squares[i][col].Piece, lin, col, lin-i, col+i)
+                }</span>
+        }
+
+        <span class="cov0" title="0">return false</span>
+}
+
+func isThreatenedSW(p board.Piece, lin int, col int, b *board.Board) bool <span class="cov0" title="0">{
+        if lin == board.MAX_LIN &amp;&amp; col == board.MAX_COL </span><span class="cov0" title="0">{
+                return false
+        }</span>
+
+        <span class="cov0" title="0">for i := 0; i &lt; getMaxSteps(lin, col, SW); i++ </span><span class="cov0" title="0">{
+                if b.Squares[i][col].Piece != board.NO_PIECE </span><span class="cov0" title="0">{
+                        isDiagonalDanger(p, b.Squares[i][col].Piece, lin, col, lin-i, col-i)
+                }</span>
+        }
+
+        <span class="cov0" title="0">return false</span>
+}
+
+func isDiagonalDanger(def, atk board.Piece, lf int, cf int, lt int, ct int) bool <span class="cov8" title="1">{
+        return getColor(def) != getColor(atk) &amp;&amp;
+                isAttackDiagonal(atk) &amp;&amp;
+                isInRangeForDiagonalAttack(atk, lf, cf, lt, ct)
+}</span>
+
+func isAttackDiagonal(p board.Piece) bool <span class="cov8" title="1">{
+        return p == board.WHITE_PAWN_A ||
+                p == board.WHITE_PAWN_B ||
+                p == board.WHITE_PAWN_C ||
+                p == board.WHITE_PAWN_D ||
+                p == board.WHITE_PAWN_E ||
+                p == board.WHITE_PAWN_F ||
+                p == board.WHITE_PAWN_G ||
+                p == board.WHITE_PAWN_H ||
+                p == board.WHITE_BISHOP_QUEEN ||
+                p == board.WHITE_BISHOP_KING ||
+                p == board.WHITE_QUEEN ||
+                p == board.WHITE_KING ||
+                p == board.BLACK_PAWN_A ||
+                p == board.BLACK_PAWN_B ||
+                p == board.BLACK_PAWN_C ||
+                p == board.BLACK_PAWN_D ||
+                p == board.BLACK_PAWN_E ||
+                p == board.BLACK_PAWN_F ||
+                p == board.BLACK_PAWN_G ||
+                p == board.BLACK_PAWN_H ||
+                p == board.BLACK_BISHOP_QUEEN ||
+                p == board.BLACK_BISHOP_KING ||
+                p == board.BLACK_QUEEN ||
+                p == board.BLACK_KING
+}</span>
+
+func isInRangeForDiagonalAttack(atk board.Piece, lf int, cf int, lt int, ct int) bool <span class="cov8" title="1">{
+        switch atk </span>{
+        case board.WHITE_PAWN_A:<span class="cov8" title="1">
+                return lt-lf == 1 &amp;&amp; math.Abs(float64(ct-cf)) == 1</span>
+        case board.WHITE_PAWN_B:<span class="cov8" title="1">
+                return lt-lf == 1 &amp;&amp; math.Abs(float64(ct-cf)) == 1</span>
+        case board.WHITE_PAWN_C:<span class="cov8" title="1">
+                return lt-lf == 1 &amp;&amp; math.Abs(float64(ct-cf)) == 1</span>
+        case board.WHITE_PAWN_D:<span class="cov8" title="1">
+                return lt-lf == 1 &amp;&amp; math.Abs(float64(ct-cf)) == 1</span>
+        case board.WHITE_PAWN_E:<span class="cov8" title="1">
+                return lt-lf == 1 &amp;&amp; math.Abs(float64(ct-cf)) == 1</span>
+        case board.WHITE_PAWN_F:<span class="cov8" title="1">
+                return lt-lf == 1 &amp;&amp; math.Abs(float64(ct-cf)) == 1</span>
+        case board.WHITE_PAWN_G:<span class="cov8" title="1">
+                return lt-lf == 1 &amp;&amp; math.Abs(float64(ct-cf)) == 1</span>
+        case board.WHITE_PAWN_H:<span class="cov8" title="1">
+                return lt-lf == 1 &amp;&amp; math.Abs(float64(ct-cf)) == 1</span>
+        case board.WHITE_BISHOP_QUEEN:<span class="cov8" title="1">
+                return true</span>
+        case board.WHITE_BISHOP_KING:<span class="cov8" title="1">
+                return true</span>
+        case board.WHITE_QUEEN:<span class="cov8" title="1">
+                return true</span>
+        case board.WHITE_KING:<span class="cov8" title="1">
+                return math.Abs(float64(lt-lf)) == 1 &amp;&amp; math.Abs(float64(ct-cf)) == 1</span>
+
+        case board.BLACK_PAWN_A:<span class="cov8" title="1">
+                return lt-lf == -1 &amp;&amp; math.Abs(float64(ct-cf)) == 1</span>
+        case board.BLACK_PAWN_B:<span class="cov8" title="1">
+                return lt-lf == -1 &amp;&amp; math.Abs(float64(ct-cf)) == 1</span>
+        case board.BLACK_PAWN_C:<span class="cov8" title="1">
+                return lt-lf == -1 &amp;&amp; math.Abs(float64(ct-cf)) == 1</span>
+        case board.BLACK_PAWN_D:<span class="cov8" title="1">
+                return lt-lf == -1 &amp;&amp; math.Abs(float64(ct-cf)) == 1</span>
+        case board.BLACK_PAWN_E:<span class="cov8" title="1">
+                return lt-lf == -1 &amp;&amp; math.Abs(float64(ct-cf)) == 1</span>
+        case board.BLACK_PAWN_F:<span class="cov8" title="1">
+                return lt-lf == -1 &amp;&amp; math.Abs(float64(ct-cf)) == 1</span>
+        case board.BLACK_PAWN_G:<span class="cov8" title="1">
+                return lt-lf == -1 &amp;&amp; math.Abs(float64(ct-cf)) == 1</span>
+        case board.BLACK_PAWN_H:<span class="cov8" title="1">
+                return lt-lf == -1 &amp;&amp; math.Abs(float64(ct-cf)) == 1</span>
+        case board.BLACK_BISHOP_QUEEN:<span class="cov8" title="1">
+                return true</span>
+        case board.BLACK_BISHOP_KING:<span class="cov8" title="1">
+                return true</span>
+        case board.BLACK_QUEEN:<span class="cov8" title="1">
+                return true</span>
+        case board.BLACK_KING:<span class="cov8" title="1">
+                return math.Abs(float64(lt-lf)) == 1 &amp;&amp; math.Abs(float64(ct-cf)) == 1</span>
+        default:<span class="cov8" title="1">
+                return false</span>
+        }
+}
+
+func getMaxSteps(lin, col int, d direction) int <span class="cov8" title="1">{
+        var l, c int
+
+        switch d </span>{
+        case NE:<span class="cov8" title="1">
+                l = (board.MAX_LIN - 1) - lin
+                c = (board.MAX_COL - 1) - col</span>
+        case NW:<span class="cov8" title="1">
+                l = (board.MAX_LIN - 1) - lin
+                c = col</span>
+        case SE:<span class="cov8" title="1">
+                l = lin
+                c = (board.MAX_COL - 1) - col</span>
+        case SW:<span class="cov8" title="1">
+                l = lin
+                c = col</span>
+        }
+
+        <span class="cov8" title="1">if l &gt; c </span><span class="cov8" title="1">{
+                return c
+        }</span>
+
+        <span class="cov8" title="1">return l</span>
+}
+
+func getColor(p board.Piece) Color <span class="cov8" title="1">{
+        if isPieceWhite(p) </span><span class="cov8" title="1">{
+                return WHITES
+        }</span>
+
+        <span class="cov8" title="1">if isPieceBlack(p) </span><span class="cov8" title="1">{
+                return BLACKS
+        }</span>
+
+        <span class="cov0" title="0">panic("trying to get color of an unknown piece")</span>
+}
+</pre>
+		
+		<pre class="file" id="file7" style="display: none">package rules
+
+import "github.com/joesantos418/joe-chess/pkg/board"
+
+func isValidMove(p board.Piece, from, to board.SquareName, g *Game) (bool, InvalidMoveReason) <span class="cov8" title="1">{
+        if p == board.NO_PIECE </span><span class="cov0" title="0">{
+                return false, EMPTY_SQUARE
+        }</span>
+
+        <span class="cov8" title="1">is := isColorsTurn(p, g)
+        if !is </span><span class="cov8" title="1">{
+                return false, NOT_COLORS_TURN
+        }</span>
+
+        <span class="cov8" title="1">is = isMoveCorrect(p, from, to, g)
+        if !is </span><span class="cov8" title="1">{
+                return false, MOVE_INCORRECT
+        }</span>
+
+        <span class="cov8" title="1">is = isMoveFree(p, from, to, g)
+        if !is </span><span class="cov8" title="1">{
+                return false, MOVE_OBSTRUCTED
+        }</span>
+
+        // is = isKingInCheck(p, from, to, g)
+        // if !is {
+        //         return false, KING_IN_CHECK
+        // }
+
+        <span class="cov8" title="1">return true, VALID_MOVE</span>
+}
+</pre>
+		
+		<pre class="file" id="file8" style="display: none">package rules
+
+import (
+        "github.com/arquivei/foundationkit/errors"
+        "github.com/joesantos418/joe-chess/pkg/board"
+)
+
+type Color int64
+
+const (
+        WHITES Color = iota
+        BLACKS
+)
+
+func (c Color) String() string <span class="cov0" title="0">{
+        if c == WHITES </span><span class="cov0" title="0">{
+                return "WHITES"
+        }</span>
+
+        <span class="cov0" title="0">return "BLACKS"</span>
+}
+
+type Game struct {
+        Board              *board.Board
+        WhiteCaptured      []board.Piece
+        BlackCaptured      []board.Piece
+        NowPlays           Color
+        IsWhiteKingInCheck bool
+        IsBlackKingInCheck bool
+}
+
+func NewGame() *Game <span class="cov8" title="1">{
+        return &amp;Game{
+                Board:    setupBoard(),
+                NowPlays: WHITES,
+        }
+}</span>
+
+func (g *Game) ProcessMove(p board.Piece, from, to board.SquareName) error <span class="cov8" title="1">{
+        ok, reason := isValidMove(p, from, to, g)
+        if !ok </span><span class="cov8" title="1">{
+                return errors.E(
+                        "invalid move",
+                        errors.KV("piece", p),
+                        errors.KV("from", from),
+                        errors.KV("to", to),
+                        errors.KV("reason", reason),
+                )
+        }</span>
+
+        <span class="cov8" title="1">processCapture(p, to, g)
+        err := g.Board.Move(p, from, to)
+
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">switchColorTurn(g)
+
+        return nil</span>
+}
+
+func processCapture(p board.Piece, to board.SquareName, g *Game) <span class="cov8" title="1">{
+        if !isCapture(p, to, g) </span><span class="cov8" title="1">{
+                return
+        }</span>
+
+        <span class="cov8" title="1">t := g.Board.GetPiece(to)
+        if isPieceWhite(t) </span><span class="cov8" title="1">{
+                g.BlackCaptured = append(g.BlackCaptured, t)
+        }</span> else<span class="cov8" title="1"> if isPieceBlack(t) </span><span class="cov8" title="1">{
+                g.WhiteCaptured = append(g.WhiteCaptured, t)
+        }</span>
+}
+
+func switchColorTurn(g *Game) <span class="cov8" title="1">{
+        if g.NowPlays == WHITES </span><span class="cov8" title="1">{
+                g.NowPlays = BLACKS
+        }</span> else<span class="cov8" title="1"> {
+                g.NowPlays = WHITES
+        }</span>
+}
+</pre>
+		
+		<pre class="file" id="file9" style="display: none">package rules
+
+import "github.com/joesantos418/joe-chess/pkg/board"
+
+func setupBoard() *board.Board <span class="cov8" title="1">{
+        b := &amp;board.Board{}
+
+        setWhites(b)
+        setBlacks(b)
+
+        return b
+}</span>
+
+func setWhites(b *board.Board) <span class="cov8" title="1">{
+        b.SetPiece(board.WHITE_PAWN_A, board.A2)
+        b.SetPiece(board.WHITE_PAWN_B, board.B2)
+        b.SetPiece(board.WHITE_PAWN_C, board.C2)
+        b.SetPiece(board.WHITE_PAWN_D, board.D2)
+        b.SetPiece(board.WHITE_PAWN_E, board.E2)
+        b.SetPiece(board.WHITE_PAWN_F, board.F2)
+        b.SetPiece(board.WHITE_PAWN_G, board.G2)
+        b.SetPiece(board.WHITE_PAWN_H, board.H2)
+
+        b.SetPiece(board.WHITE_ROOK_QUEEN, board.A1)
+        b.SetPiece(board.WHITE_ROOK_KING, board.H1)
+        b.SetPiece(board.WHITE_KNIGHT_QUEEN, board.B1)
+        b.SetPiece(board.WHITE_KNIGHT_KING, board.G1)
+        b.SetPiece(board.WHITE_BISHOP_QUEEN, board.C1)
+        b.SetPiece(board.WHITE_BISHOP_KING, board.F1)
+        b.SetPiece(board.WHITE_QUEEN, board.D1)
+        b.SetPiece(board.WHITE_KING, board.E1)
+}</span>
+
+func setBlacks(b *board.Board) <span class="cov8" title="1">{
+        b.SetPiece(board.BLACK_PAWN_A, board.A7)
+        b.SetPiece(board.BLACK_PAWN_B, board.B7)
+        b.SetPiece(board.BLACK_PAWN_C, board.C7)
+        b.SetPiece(board.BLACK_PAWN_D, board.D7)
+        b.SetPiece(board.BLACK_PAWN_E, board.E7)
+        b.SetPiece(board.BLACK_PAWN_F, board.F7)
+        b.SetPiece(board.BLACK_PAWN_G, board.G7)
+        b.SetPiece(board.BLACK_PAWN_H, board.H7)
+
+        b.SetPiece(board.BLACK_ROOK_QUEEN, board.A8)
+        b.SetPiece(board.BLACK_ROOK_KING, board.H8)
+        b.SetPiece(board.BLACK_KNIGHT_QUEEN, board.B8)
+        b.SetPiece(board.BLACK_KNIGHT_KING, board.G8)
+        b.SetPiece(board.BLACK_BISHOP_QUEEN, board.C8)
+        b.SetPiece(board.BLACK_BISHOP_KING, board.F8)
+        b.SetPiece(board.BLACK_QUEEN, board.D8)
+        b.SetPiece(board.BLACK_KING, board.E8)
+}</span>
+</pre>
+		
+		<pre class="file" id="file10" style="display: none">package rules
+
+type InvalidMoveReason int64
+
+const (
+        VALID_MOVE = iota
+        NOT_COLORS_TURN
+        MOVE_OBSTRUCTED
+        MOVE_INCORRECT
+        EMPTY_SQUARE
+        KING_IN_CHECK
+)
+
+func (r InvalidMoveReason) String() string <span class="cov0" title="0">{
+        switch r </span>{
+        case VALID_MOVE:<span class="cov0" title="0">
+                return "VALID_MOVE"</span>
+        case NOT_COLORS_TURN:<span class="cov0" title="0">
+                return "NOT_COLORS_TURN"</span>
+        case MOVE_OBSTRUCTED:<span class="cov0" title="0">
+                return "MOVE_OBSTRUCTED"</span>
+        case MOVE_INCORRECT:<span class="cov0" title="0">
+                return "MOVE_INCORRECT"</span>
+        case EMPTY_SQUARE:<span class="cov0" title="0">
+                return "EMPTY_SQUARE"</span>
+        case KING_IN_CHECK:<span class="cov0" title="0">
+                return "KING_IN_CHECK"</span>
+        }
+
+        <span class="cov0" title="0">return "Unknown reason"</span>
+}
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>
