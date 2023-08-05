@@ -229,14 +229,16 @@ func isInRangeForHorizontalAttack(p board.Piece, from, to int) bool {
 	}
 }
 
+// isThreatenedNE checks if a piece @p in a square with coordinates @lin, @col
+// in a board @b is threatened diagonally from the NE direction
 func isThreatenedNE(p board.Piece, lin int, col int, b *board.Board) bool {
-	if lin == board.MAX_LIN && col == board.MAX_COL {
+	if lin == board.MAX_LIN || col == board.MAX_COL {
 		return false
 	}
 
-	for i := 0; i < getMaxSteps(lin, col, NE); i++ {
-		if b.Squares[i][col].Piece != board.NO_PIECE {
-			isDiagonalDanger(p, b.Squares[i][col].Piece, lin, col, lin+i, col+i)
+	for i := 1; i < getMaxSteps(lin, col, NE); i++ {
+		if b.Squares[lin+i][col+i].Piece != board.NO_PIECE {
+			return isDiagonalDanger(p, b.Squares[lin+i][col+i].Piece, lin, col, lin+i, col+i)
 		}
 	}
 
@@ -244,13 +246,13 @@ func isThreatenedNE(p board.Piece, lin int, col int, b *board.Board) bool {
 }
 
 func isThreatenedNW(p board.Piece, lin int, col int, b *board.Board) bool {
-	if lin == board.MAX_LIN && col == board.MAX_COL {
+	if lin == board.MAX_LIN || col == 0 {
 		return false
 	}
 
 	for i := 0; i < getMaxSteps(lin, col, NW); i++ {
 		if b.Squares[i][col].Piece != board.NO_PIECE {
-			isDiagonalDanger(p, b.Squares[i][col].Piece, lin, col, lin+i, col-i)
+			return isDiagonalDanger(p, b.Squares[i][col].Piece, lin, col, lin+i, col-i)
 		}
 	}
 
@@ -258,13 +260,13 @@ func isThreatenedNW(p board.Piece, lin int, col int, b *board.Board) bool {
 }
 
 func isThreatenedSE(p board.Piece, lin int, col int, b *board.Board) bool {
-	if lin == board.MAX_LIN && col == board.MAX_COL {
+	if lin == 0 || col == board.MAX_COL {
 		return false
 	}
 
 	for i := 0; i < getMaxSteps(lin, col, SE); i++ {
 		if b.Squares[i][col].Piece != board.NO_PIECE {
-			isDiagonalDanger(p, b.Squares[i][col].Piece, lin, col, lin-i, col+i)
+			return isDiagonalDanger(p, b.Squares[i][col].Piece, lin, col, lin-i, col+i)
 		}
 	}
 
@@ -272,13 +274,13 @@ func isThreatenedSE(p board.Piece, lin int, col int, b *board.Board) bool {
 }
 
 func isThreatenedSW(p board.Piece, lin int, col int, b *board.Board) bool {
-	if lin == board.MAX_LIN && col == board.MAX_COL {
+	if lin == 0 || col == 0 {
 		return false
 	}
 
 	for i := 0; i < getMaxSteps(lin, col, SW); i++ {
 		if b.Squares[i][col].Piece != board.NO_PIECE {
-			isDiagonalDanger(p, b.Squares[i][col].Piece, lin, col, lin-i, col-i)
+			return isDiagonalDanger(p, b.Squares[i][col].Piece, lin, col, lin-i, col-i)
 		}
 	}
 

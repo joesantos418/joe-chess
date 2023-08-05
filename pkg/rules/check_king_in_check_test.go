@@ -13,6 +13,12 @@ func TestGetColor(t *testing.T) {
 
 	color = getColor(board.BLACK_KING)
 	assert.Equal(t, BLACKS, color)
+
+	color = getColor(board.WHITE_PAWN_A)
+	assert.Equal(t, WHITES, color)
+
+	color = getColor(board.BLACK_PAWN_A)
+	assert.Equal(t, BLACKS, color)
 }
 
 func TestGetMaxSteps(t *testing.T) {
@@ -190,5 +196,18 @@ func TestIsAttackDiagonal(t *testing.T) {
 
 func TestIsDiagonalDanger(t *testing.T) {
 	is := isDiagonalDanger(board.WHITE_PAWN_A, board.BLACK_PAWN_B, 6, 1, 5, 0)
+	assert.True(t, is)
+
+	is = isDiagonalDanger(board.WHITE_PAWN_A, board.BLACK_PAWN_B, 6, 1, 4, 0)
+	assert.False(t, is)
+}
+
+func TestIsThreatenedNE(t *testing.T) {
+	b := &board.Board{}
+
+	b.SetPiece(board.WHITE_BISHOP_QUEEN, board.D4)
+	b.SetPiece(board.BLACK_BISHOP_KING, board.F6)
+
+	is := isThreatenedNE(board.WHITE_BISHOP_QUEEN, 3, 3, b)
 	assert.True(t, is)
 }
