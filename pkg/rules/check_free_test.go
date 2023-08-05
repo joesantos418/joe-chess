@@ -436,12 +436,22 @@ func TestIsFreeForKnight(t *testing.T) {
 
 	is = isFreeForKnight(board.WHITE_KNIGHT_QUEEN, board.B1, board.D2, g)
 	assert.False(t, is)
+
+	g.Board.Move(board.WHITE_KNIGHT_QUEEN, board.B1, board.B6)
+	is = isFreeForKnight(board.WHITE_KNIGHT_QUEEN, board.B6, board.C8, g)
+	assert.True(t, is)
+
+	is = isFreeForKnight(board.WHITE_KNIGHT_QUEEN, board.B6, board.D7, g)
+	assert.True(t, is)
 }
 
 func TestIsFreeForRook(t *testing.T) {
 	g := NewGame()
 
 	is := isFreeForRook(board.WHITE_ROOK_QUEEN, board.A1, board.A3, g)
+	assert.False(t, is)
+
+	is = isFreeForRook(board.WHITE_ROOK_QUEEN, board.A1, board.A2, g)
 	assert.False(t, is)
 
 	g.Board.Move(board.WHITE_ROOK_QUEEN, board.A1, board.A3)
@@ -469,6 +479,9 @@ func TestIsFreeForPawn(t *testing.T) {
 
 	g.Board.Move(board.WHITE_PAWN_A, board.A2, board.B1)
 	is = isFreeForPawn(board.WHITE_PAWN_A, board.B1, board.B3, g)
+	assert.False(t, is)
+
+	is = isFreeForPawn(board.WHITE_PAWN_A, board.B1, board.B2, g)
 	assert.False(t, is)
 }
 

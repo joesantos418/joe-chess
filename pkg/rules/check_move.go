@@ -22,10 +22,10 @@ func isValidMove(p board.Piece, from, to board.SquareName, g *Game) (bool, Inval
 		return false, MOVE_OBSTRUCTED
 	}
 
-	// is = isKingInCheck(p, from, to, g)
-	// if !is {
-	// 	return false, KING_IN_CHECK
-	// }
+	is = isKingInCheck(p, from, to, g)
+	if !is {
+		return false, KING_IN_CHECK
+	}
 
 	return true, VALID_MOVE
 }

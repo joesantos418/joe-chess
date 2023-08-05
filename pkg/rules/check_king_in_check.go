@@ -152,21 +152,15 @@ func isAttackVertical(p board.Piece) bool {
 
 func isInRangeForVerticalAttack(p board.Piece, from, to int) bool {
 	switch p {
-	case board.WHITE_ROOK_QUEEN:
+	case board.WHITE_ROOK_QUEEN,
+		board.WHITE_ROOK_KING,
+		board.WHITE_QUEEN,
+		board.BLACK_ROOK_QUEEN,
+		board.BLACK_ROOK_KING,
+		board.BLACK_QUEEN:
 		return true
-	case board.WHITE_ROOK_KING:
-		return true
-	case board.WHITE_QUEEN:
-		return true
-	case board.WHITE_KING:
-		return math.Abs(float64(to-from)) == 1
-	case board.BLACK_ROOK_QUEEN:
-		return true
-	case board.BLACK_ROOK_KING:
-		return true
-	case board.BLACK_QUEEN:
-		return true
-	case board.BLACK_KING:
+	case board.WHITE_KING,
+		board.BLACK_KING:
 		return math.Abs(float64(to-from)) == 1
 	default:
 		return false
@@ -220,21 +214,15 @@ func isAttackHorizontal(p board.Piece) bool {
 
 func isInRangeForHorizontalAttack(p board.Piece, from, to int) bool {
 	switch p {
-	case board.WHITE_ROOK_QUEEN:
+	case board.WHITE_ROOK_QUEEN,
+		board.WHITE_ROOK_KING,
+		board.WHITE_QUEEN,
+		board.BLACK_ROOK_QUEEN,
+		board.BLACK_ROOK_KING,
+		board.BLACK_QUEEN:
 		return true
-	case board.WHITE_ROOK_KING:
-		return true
-	case board.WHITE_QUEEN:
-		return true
-	case board.WHITE_KING:
-		return math.Abs(float64(to-from)) == 1
-	case board.BLACK_ROOK_QUEEN:
-		return true
-	case board.BLACK_ROOK_KING:
-		return true
-	case board.BLACK_QUEEN:
-		return true
-	case board.BLACK_KING:
+	case board.WHITE_KING,
+		board.BLACK_KING:
 		return math.Abs(float64(to-from)) == 1
 	default:
 		return false
@@ -332,52 +320,34 @@ func isAttackDiagonal(p board.Piece) bool {
 
 func isInRangeForDiagonalAttack(atk board.Piece, lf int, cf int, lt int, ct int) bool {
 	switch atk {
-	case board.WHITE_PAWN_A:
+	case board.WHITE_PAWN_A,
+		board.WHITE_PAWN_B,
+		board.WHITE_PAWN_C,
+		board.WHITE_PAWN_D,
+		board.WHITE_PAWN_E,
+		board.WHITE_PAWN_F,
+		board.WHITE_PAWN_G,
+		board.WHITE_PAWN_H:
 		return lt-lf == 1 && math.Abs(float64(ct-cf)) == 1
-	case board.WHITE_PAWN_B:
-		return lt-lf == 1 && math.Abs(float64(ct-cf)) == 1
-	case board.WHITE_PAWN_C:
-		return lt-lf == 1 && math.Abs(float64(ct-cf)) == 1
-	case board.WHITE_PAWN_D:
-		return lt-lf == 1 && math.Abs(float64(ct-cf)) == 1
-	case board.WHITE_PAWN_E:
-		return lt-lf == 1 && math.Abs(float64(ct-cf)) == 1
-	case board.WHITE_PAWN_F:
-		return lt-lf == 1 && math.Abs(float64(ct-cf)) == 1
-	case board.WHITE_PAWN_G:
-		return lt-lf == 1 && math.Abs(float64(ct-cf)) == 1
-	case board.WHITE_PAWN_H:
-		return lt-lf == 1 && math.Abs(float64(ct-cf)) == 1
-	case board.WHITE_BISHOP_QUEEN:
-		return true
-	case board.WHITE_BISHOP_KING:
-		return true
-	case board.WHITE_QUEEN:
+	case board.WHITE_BISHOP_QUEEN,
+		board.WHITE_BISHOP_KING,
+		board.WHITE_QUEEN:
 		return true
 	case board.WHITE_KING:
 		return math.Abs(float64(lt-lf)) == 1 && math.Abs(float64(ct-cf)) == 1
 
-	case board.BLACK_PAWN_A:
+	case board.BLACK_PAWN_A,
+		board.BLACK_PAWN_B,
+		board.BLACK_PAWN_C,
+		board.BLACK_PAWN_D,
+		board.BLACK_PAWN_E,
+		board.BLACK_PAWN_F,
+		board.BLACK_PAWN_G,
+		board.BLACK_PAWN_H:
 		return lt-lf == -1 && math.Abs(float64(ct-cf)) == 1
-	case board.BLACK_PAWN_B:
-		return lt-lf == -1 && math.Abs(float64(ct-cf)) == 1
-	case board.BLACK_PAWN_C:
-		return lt-lf == -1 && math.Abs(float64(ct-cf)) == 1
-	case board.BLACK_PAWN_D:
-		return lt-lf == -1 && math.Abs(float64(ct-cf)) == 1
-	case board.BLACK_PAWN_E:
-		return lt-lf == -1 && math.Abs(float64(ct-cf)) == 1
-	case board.BLACK_PAWN_F:
-		return lt-lf == -1 && math.Abs(float64(ct-cf)) == 1
-	case board.BLACK_PAWN_G:
-		return lt-lf == -1 && math.Abs(float64(ct-cf)) == 1
-	case board.BLACK_PAWN_H:
-		return lt-lf == -1 && math.Abs(float64(ct-cf)) == 1
-	case board.BLACK_BISHOP_QUEEN:
-		return true
-	case board.BLACK_BISHOP_KING:
-		return true
-	case board.BLACK_QUEEN:
+	case board.BLACK_BISHOP_QUEEN,
+		board.BLACK_BISHOP_KING,
+		board.BLACK_QUEEN:
 		return true
 	case board.BLACK_KING:
 		return math.Abs(float64(lt-lf)) == 1 && math.Abs(float64(ct-cf)) == 1
