@@ -229,6 +229,10 @@ func isInRangeForHorizontalAttack(p board.Piece, from, to int) bool {
 	}
 }
 
+func isSquareEmpty(s board.Square) bool {
+	return s.Piece == board.NO_PIECE
+}
+
 // isThreatenedNE checks if a piece @p in a square with coordinates @lin, @col
 // in a board @b is threatened diagonally from the NE direction
 func isThreatenedNE(p board.Piece, lin int, col int, b *board.Board) bool {
@@ -236,9 +240,17 @@ func isThreatenedNE(p board.Piece, lin int, col int, b *board.Board) bool {
 		return false
 	}
 
-	for i := 1; i < getMaxSteps(lin, col, NE); i++ {
-		if b.Squares[lin+i][col+i].Piece != board.NO_PIECE {
-			return isDiagonalDanger(p, b.Squares[lin+i][col+i].Piece, lin, col, lin+i, col+i)
+	for i := 1; i <= getMaxSteps(lin, col, NE); i++ {
+		// exercise: why not just use lin + i and col - i?
+		// hint: mind beacons and avoiding errors
+		nextL := lin + i
+		nextC := col + i
+
+		// exercise: this condition is repeated for all 4 methods
+		// can we encapsulate it in a function?
+		if !isSquareEmpty(b.Squares[nextL][nextC]) {
+			atk := b.Squares[nextL][nextC].Piece
+			return isDiagonalDanger(p, atk, lin, col, nextL, nextC)
 		}
 	}
 
@@ -250,9 +262,13 @@ func isThreatenedNW(p board.Piece, lin int, col int, b *board.Board) bool {
 		return false
 	}
 
-	for i := 0; i < getMaxSteps(lin, col, NW); i++ {
-		if b.Squares[i][col].Piece != board.NO_PIECE {
-			return isDiagonalDanger(p, b.Squares[i][col].Piece, lin, col, lin+i, col-i)
+	for i := 1; i <= getMaxSteps(lin, col, NW); i++ {
+		nextL := lin + i
+		nextC := col - i
+
+		if !isSquareEmpty(b.Squares[nextL][nextC]) {
+			atk := b.Squares[nextL][nextC].Piece
+			return isDiagonalDanger(p, atk, lin, col, nextL, nextC)
 		}
 	}
 
@@ -264,9 +280,13 @@ func isThreatenedSE(p board.Piece, lin int, col int, b *board.Board) bool {
 		return false
 	}
 
-	for i := 0; i < getMaxSteps(lin, col, SE); i++ {
-		if b.Squares[i][col].Piece != board.NO_PIECE {
-			return isDiagonalDanger(p, b.Squares[i][col].Piece, lin, col, lin-i, col+i)
+	for i := 1; i <= getMaxSteps(lin, col, SE); i++ {
+		nextL := lin - i
+		nextC := col + i
+
+		if !isSquareEmpty(b.Squares[nextL][nextC]) {
+			atk := b.Squares[nextL][nextC].Piece
+			return isDiagonalDanger(p, atk, lin, col, nextL, nextC)
 		}
 	}
 
@@ -278,21 +298,26 @@ func isThreatenedSW(p board.Piece, lin int, col int, b *board.Board) bool {
 		return false
 	}
 
-	for i := 0; i < getMaxSteps(lin, col, SW); i++ {
-		if b.Squares[i][col].Piece != board.NO_PIECE {
-			return isDiagonalDanger(p, b.Squares[i][col].Piece, lin, col, lin-i, col-i)
+	for i := 1; i <= getMaxSteps(lin, col, SW); i++ {
+		nextL := lin - i
+		nextC := col - i
+
+		if !isSquareEmpty(b.Squares[nextL][nextC]) {
+			atk := b.Squares[nextL][nextC].Piece
+			return isDiagonalDanger(p, atk, lin, col, nextL, nextC)
 		}
 	}
 
 	return false
 }
 
-func isDiagonalDanger(def, atk board.Piece, lf int, cf int, lt int, ct int) bool {
+func isDiagonalDanger(def board.Piece, atk board.Piece, lf int, cf int, lt int, ct int) bool {
 	return getColor(def) != getColor(atk) &&
 		isAttackDiagonal(atk) &&
 		isInRangeForDiagonalAttack(atk, lf, cf, lt, ct)
 }
 
+// is this a good name? maybe is diagonalAttacker
 func isAttackDiagonal(p board.Piece) bool {
 	return p == board.WHITE_PAWN_A ||
 		p == board.WHITE_PAWN_B ||

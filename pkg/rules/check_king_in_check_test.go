@@ -202,12 +202,271 @@ func TestIsDiagonalDanger(t *testing.T) {
 	assert.False(t, is)
 }
 
-func TestIsThreatenedNE(t *testing.T) {
+// Is there a threat in an empty board? No.
+func TestIsThreatenedNE_EmptyBoard(t *testing.T) {
+	b := &board.Board{}
+	b.SetPiece(board.WHITE_BISHOP_QUEEN, board.D4)
+	D4Lin := 3
+	D4Col := 3
+
+	is := isThreatenedNE(board.WHITE_BISHOP_QUEEN, D4Lin, D4Col, b)
+	assert.False(t, is)
+}
+
+// Is there a threat when there are other pieces in the board, but none
+// in the NE diagonal? No.
+func TestIsThreatenedNE_OtherPiecesNoneInDiagonal(t *testing.T) {
 	b := &board.Board{}
 
+	// filling up the NE quadrant except for the D4-H8 diagonal
+	// nothing in D4
+	b.SetPiece(board.BLACK_BISHOP_KING, board.E4)
+	b.SetPiece(board.BLACK_BISHOP_KING, board.F4)
+	b.SetPiece(board.BLACK_BISHOP_KING, board.G4)
+	b.SetPiece(board.BLACK_BISHOP_KING, board.H4)
+	b.SetPiece(board.BLACK_BISHOP_KING, board.D5)
+	// nothing in E5
+	b.SetPiece(board.BLACK_BISHOP_KING, board.F5)
+	b.SetPiece(board.BLACK_BISHOP_KING, board.G5)
+	b.SetPiece(board.BLACK_BISHOP_KING, board.H5)
+	b.SetPiece(board.BLACK_BISHOP_KING, board.D6)
+	b.SetPiece(board.BLACK_BISHOP_KING, board.E6)
+	// nothing in F6
+	b.SetPiece(board.BLACK_BISHOP_KING, board.G6)
+	b.SetPiece(board.BLACK_BISHOP_KING, board.H6)
+	b.SetPiece(board.BLACK_BISHOP_KING, board.D7)
+	b.SetPiece(board.BLACK_BISHOP_KING, board.E7)
+	b.SetPiece(board.BLACK_BISHOP_KING, board.F7)
+	// nothing in g7
+	b.SetPiece(board.BLACK_BISHOP_KING, board.H7)
+	b.SetPiece(board.BLACK_BISHOP_KING, board.D8)
+	b.SetPiece(board.BLACK_BISHOP_KING, board.E8)
+	b.SetPiece(board.BLACK_BISHOP_KING, board.F8)
+	b.SetPiece(board.BLACK_BISHOP_KING, board.G8)
+	// nothing in H8
+
+	// adding pieces to other diagonals
+	b.SetPiece(board.BLACK_BISHOP_KING, board.C5)
+	b.SetPiece(board.BLACK_BISHOP_KING, board.F2)
+	b.SetPiece(board.BLACK_BISHOP_KING, board.A1)
+
+	// adding other random pieces for good measure
+	b.SetPiece(board.BLACK_BISHOP_KING, board.A6)
+	b.SetPiece(board.BLACK_BISHOP_KING, board.B3)
+	b.SetPiece(board.BLACK_BISHOP_KING, board.H1)
+	b.SetPiece(board.BLACK_BISHOP_KING, board.B8)
+	b.SetPiece(board.BLACK_BISHOP_KING, board.C3)
+
+	b.SetPiece(board.WHITE_BISHOP_QUEEN, board.D4)
+	// exercise: why not use the 3 directly?
+	// hint: mind beacons
+	D4Lin := 3
+	D4Col := 3
+
+	is := isThreatenedNE(board.WHITE_BISHOP_QUEEN, D4Lin, D4Col, b)
+
+	assert.False(t, is)
+}
+
+// Is there a threat when there's other piece in the NE diagonal close the
+// defending piece? Yes.
+func TestIsThreatenedNE_OtherPieceInDiagonalClose(t *testing.T) {
+	b := &board.Board{}
+	b.SetPiece(board.WHITE_BISHOP_QUEEN, board.D4)
+	b.SetPiece(board.BLACK_BISHOP_KING, board.E5)
+
+	D4Lin := 3
+	D4Col := 3
+	is := isThreatenedNE(board.WHITE_BISHOP_QUEEN, D4Lin, D4Col, b)
+
+	assert.True(t, is)
+}
+
+// Is there a threat when there's other piece in the NE diagonal far from the
+// defending piece? Yes.
+func TestIsThreatenedNE_OtherPieceInDiagonalFar(t *testing.T) {
+	b := &board.Board{}
 	b.SetPiece(board.WHITE_BISHOP_QUEEN, board.D4)
 	b.SetPiece(board.BLACK_BISHOP_KING, board.F6)
 
-	is := isThreatenedNE(board.WHITE_BISHOP_QUEEN, 3, 3, b)
+	D4Lin := 3
+	D4Col := 3
+	is := isThreatenedNE(board.WHITE_BISHOP_QUEEN, D4Lin, D4Col, b)
+
+	assert.True(t, is)
+}
+
+// Is there a threat when there's other piece in the NE diagonal as far possible
+// from the defending piece? Yes.
+func TestIsThreatenedNE_OtherPieceInDiagonalFarthest(t *testing.T) {
+	b := &board.Board{}
+	b.SetPiece(board.WHITE_BISHOP_QUEEN, board.D4)
+	b.SetPiece(board.BLACK_BISHOP_KING, board.H8)
+
+	D4Lin := 3
+	D4Col := 3
+	is := isThreatenedNE(board.WHITE_BISHOP_QUEEN, D4Lin, D4Col, b)
+
+	assert.True(t, is)
+}
+
+// Is there a threat when there's other white piece in the NE diagonal close the
+// defending piece? No.
+func TestIsThreatenedNE_OtherWhitePieceInDiagonalClose(t *testing.T) {
+	b := &board.Board{}
+	b.SetPiece(board.WHITE_BISHOP_QUEEN, board.D4)
+	b.SetPiece(board.WHITE_BISHOP_KING, board.E5)
+
+	D4Lin := 3
+	D4Col := 3
+	is := isThreatenedNE(board.WHITE_BISHOP_QUEEN, D4Lin, D4Col, b)
+
+	assert.False(t, is)
+}
+
+// Is there a threat when there's other white piece in the NE diagonal far from
+// the defending piece? No.
+func TestIsThreatenedNE_OtherWhitePieceInDiagonalFar(t *testing.T) {
+	b := &board.Board{}
+	b.SetPiece(board.WHITE_BISHOP_QUEEN, board.D4)
+	b.SetPiece(board.WHITE_BISHOP_KING, board.F6)
+
+	D4Lin := 3
+	D4Col := 3
+	is := isThreatenedNE(board.WHITE_BISHOP_QUEEN, D4Lin, D4Col, b)
+
+	assert.False(t, is)
+}
+
+// Is there a threat when there's other white piece in the NE diagonal as far
+// possible from the defending piece? No.
+func TestIsThreatenedNE_OtherWhitePieceInDiagonalFarthest(t *testing.T) {
+	b := &board.Board{}
+	b.SetPiece(board.WHITE_BISHOP_QUEEN, board.D4)
+	b.SetPiece(board.WHITE_BISHOP_KING, board.H8)
+
+	D4Lin := 3
+	D4Col := 3
+	is := isThreatenedNE(board.WHITE_BISHOP_QUEEN, D4Lin, D4Col, b)
+
+	assert.False(t, is)
+}
+
+// exercise: this is the legacy test
+// why is it not the best?
+// hint: each test case must be one test
+// func TestIsThreatenedNE(t *testing.T) {
+// 	b := &board.Board{}
+
+// 	b.SetPiece(board.WHITE_BISHOP_QUEEN, board.D4)
+
+// 	is := isThreatenedNE(board.WHITE_BISHOP_QUEEN, 3, 3, b)
+// 	assert.False(t, is)
+
+// 	b.SetPiece(board.BLACK_BISHOP_KING, board.G6)
+// 	is = isThreatenedNE(board.WHITE_BISHOP_QUEEN, 3, 3, b)
+// 	assert.False(t, is)
+
+// 	b.SetPiece(board.BLACK_BISHOP_KING, board.F7)
+// 	is = isThreatenedNE(board.WHITE_BISHOP_QUEEN, 3, 3, b)
+// 	assert.False(t, is)
+
+// 	b.SetPiece(board.BLACK_BISHOP_KING, board.F6)
+// 	is = isThreatenedNE(board.WHITE_BISHOP_QUEEN, 3, 3, b)
+// 	assert.True(t, is)
+
+// 	b.SetPiece(board.NO_PIECE, board.F6)
+// 	is = isThreatenedNE(board.WHITE_BISHOP_QUEEN, 3, 3, b)
+// 	assert.False(t, is)
+
+// 	b.SetPiece(board.BLACK_BISHOP_KING, board.H8)
+// 	is = isThreatenedNE(board.WHITE_BISHOP_QUEEN, 3, 3, b)
+// 	assert.True(t, is)
+
+// 	b.SetPiece(board.NO_PIECE, board.F6)
+// 	is = isThreatenedNE(board.WHITE_BISHOP_QUEEN, 3, 3, b)
+// 	assert.False(t, is)
+
+// 	b.SetPiece(board.BLACK_BISHOP_KING, board.E5)
+// 	is = isThreatenedNE(board.WHITE_BISHOP_QUEEN, 3, 3, b)
+// 	assert.True(t, is)
+// }
+
+func TestIsThreatenedNW(t *testing.T) {
+	b := &board.Board{}
+
+	b.SetPiece(board.WHITE_BISHOP_QUEEN, board.D4)
+
+	is := isThreatenedNW(board.WHITE_BISHOP_QUEEN, 3, 3, b)
+	assert.False(t, is)
+
+	b.SetPiece(board.BLACK_BISHOP_KING, board.C6)
+	is = isThreatenedNW(board.WHITE_BISHOP_QUEEN, 3, 3, b)
+	assert.False(t, is)
+
+	b.SetPiece(board.BLACK_BISHOP_KING, board.B5)
+	is = isThreatenedNW(board.WHITE_BISHOP_QUEEN, 3, 3, b)
+	assert.False(t, is)
+
+	b.SetPiece(board.BLACK_BISHOP_KING, board.B6)
+	is = isThreatenedNW(board.WHITE_BISHOP_QUEEN, 3, 3, b)
+	assert.True(t, is)
+}
+
+func TestIsThreatenedSE(t *testing.T) {
+	b := &board.Board{}
+
+	b.SetPiece(board.WHITE_BISHOP_QUEEN, board.D4)
+
+	is := isThreatenedSE(board.WHITE_BISHOP_QUEEN, 3, 3, b)
+	assert.False(t, is)
+
+	b.SetPiece(board.BLACK_BISHOP_KING, board.E2)
+	is = isThreatenedSE(board.WHITE_BISHOP_QUEEN, 3, 3, b)
+	assert.False(t, is)
+
+	b.SetPiece(board.BLACK_BISHOP_KING, board.F3)
+	is = isThreatenedSE(board.WHITE_BISHOP_QUEEN, 3, 3, b)
+	assert.False(t, is)
+
+	b.SetPiece(board.BLACK_BISHOP_KING, board.G1)
+	is = isThreatenedSE(board.WHITE_BISHOP_QUEEN, 3, 3, b)
+	assert.True(t, is)
+
+	b.SetPiece(board.NO_PIECE, board.G1)
+	is = isThreatenedSE(board.WHITE_BISHOP_QUEEN, 3, 3, b)
+	assert.False(t, is)
+
+	b.SetPiece(board.BLACK_BISHOP_KING, board.E3)
+	is = isThreatenedSE(board.WHITE_BISHOP_QUEEN, 3, 3, b)
+	assert.True(t, is)
+}
+
+func TestIsThreatenedSW(t *testing.T) {
+	b := &board.Board{}
+
+	b.SetPiece(board.WHITE_BISHOP_QUEEN, board.D4)
+
+	is := isThreatenedSW(board.WHITE_BISHOP_QUEEN, 3, 3, b)
+	assert.False(t, is)
+
+	b.SetPiece(board.BLACK_BISHOP_KING, board.C2)
+	is = isThreatenedSW(board.WHITE_BISHOP_QUEEN, 3, 3, b)
+	assert.False(t, is)
+
+	b.SetPiece(board.BLACK_BISHOP_KING, board.B3)
+	is = isThreatenedSW(board.WHITE_BISHOP_QUEEN, 3, 3, b)
+	assert.False(t, is)
+
+	b.SetPiece(board.BLACK_BISHOP_KING, board.A1)
+	is = isThreatenedSW(board.WHITE_BISHOP_QUEEN, 3, 3, b)
+	assert.True(t, is)
+
+	b.SetPiece(board.NO_PIECE, board.A1)
+	is = isThreatenedSW(board.WHITE_BISHOP_QUEEN, 3, 3, b)
+	assert.False(t, is)
+
+	b.SetPiece(board.BLACK_BISHOP_KING, board.C3)
+	is = isThreatenedSW(board.WHITE_BISHOP_QUEEN, 3, 3, b)
 	assert.True(t, is)
 }
