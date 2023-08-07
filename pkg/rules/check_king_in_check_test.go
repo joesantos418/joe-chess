@@ -470,3 +470,69 @@ func TestIsThreatenedSW(t *testing.T) {
 	is = isThreatenedSW(board.WHITE_BISHOP_QUEEN, 3, 3, b)
 	assert.True(t, is)
 }
+
+func TestIsInRangeForHorizontalAttack_Pawn(t *testing.T) {
+	p := board.WHITE_PAWN_A
+	from := 0
+	to := 2
+
+	is := isInRangeForHorizontalAttack(p, from, to)
+	assert.False(t, is)
+}
+
+func TestIsInRangeForHorizontalAttack_Rook(t *testing.T) {
+	p := board.WHITE_ROOK_KING
+	from := 0
+	to := 5
+
+	is := isInRangeForHorizontalAttack(p, from, to)
+	assert.True(t, is)
+}
+
+func TestIsInRangeForHorizontalAttack_KingClose(t *testing.T) {
+	p := board.WHITE_KING
+	from := 0
+	to := 1
+
+	is := isInRangeForHorizontalAttack(p, from, to)
+	assert.True(t, is)
+}
+
+func TestIsInRangeForHorizontalAttack_KingFar(t *testing.T) {
+	p := board.WHITE_KING
+	from := 0
+	to := 3
+
+	is := isInRangeForHorizontalAttack(p, from, to)
+	assert.False(t, is)
+}
+
+func TestIsAttackHorizontal_King(t *testing.T) {
+	is := isAttackHorizontal(board.BLACK_KING)
+	assert.True(t, is)
+}
+
+func TestIsAttackHorizontal_Bishop(t *testing.T) {
+	is := isAttackHorizontal(board.BLACK_BISHOP_KING)
+	assert.False(t, is)
+}
+
+func TestIsHorizontalDanger_SameColor(t *testing.T) {
+	is := isHorizontalDanger(board.WHITE_PAWN_A, board.WHITE_QUEEN, 0, 2)
+	assert.False(t, is)
+}
+
+func TestIsHorizontalDanger_NotHorizontalAttacker(t *testing.T) {
+	is := isHorizontalDanger(board.WHITE_PAWN_A, board.BLACK_BISHOP_KING, 0, 2)
+	assert.False(t, is)
+}
+
+func TestIsHorizontalDanger_OutOfRange(t *testing.T) {
+	is := isHorizontalDanger(board.WHITE_PAWN_A, board.BLACK_KING, 0, 2)
+	assert.False(t, is)
+}
+
+func TestIsHorizontalDanger_InDanger(t *testing.T) {
+	is := isHorizontalDanger(board.WHITE_PAWN_A, board.BLACK_KING, 0, 1)
+	assert.False(t, is)
+}
