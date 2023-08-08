@@ -536,3 +536,167 @@ func TestIsHorizontalDanger_InDanger(t *testing.T) {
 	is := isHorizontalDanger(board.WHITE_PAWN_A, board.BLACK_KING, 0, 1)
 	assert.False(t, is)
 }
+
+func TestIsThreatenedLeft_EmptyBoard(t *testing.T) {
+	b := &board.Board{}
+	b.SetPiece(board.BLACK_PAWN_A, board.E1)
+
+	is := isThreatenedLeft(board.BLACK_PAWN_A, 0, 4, b)
+
+	assert.False(t, is)
+}
+
+func TestIsThreatenedLeft_Close(t *testing.T) {
+	b := &board.Board{}
+	b.SetPiece(board.BLACK_PAWN_A, board.E1)
+	b.SetPiece(board.WHITE_ROOK_KING, board.D1)
+
+	is := isThreatenedLeft(board.BLACK_PAWN_A, 0, 4, b)
+
+	assert.True(t, is)
+}
+
+func TestIsThreatenedLeft_Far(t *testing.T) {
+	b := &board.Board{}
+	b.SetPiece(board.BLACK_PAWN_A, board.E1)
+	b.SetPiece(board.WHITE_ROOK_KING, board.B1)
+
+	is := isThreatenedLeft(board.BLACK_PAWN_A, 0, 4, b)
+
+	assert.True(t, is)
+}
+
+func TestIsThreatenedLeft_Farther(t *testing.T) {
+	b := &board.Board{}
+	b.SetPiece(board.BLACK_PAWN_A, board.H1)
+	b.SetPiece(board.WHITE_ROOK_KING, board.A1)
+
+	is := isThreatenedLeft(board.BLACK_PAWN_A, 0, 4, b)
+
+	assert.True(t, is)
+}
+
+func TestIsThreatenedLeft_NoLeft(t *testing.T) {
+	b := &board.Board{}
+	b.SetPiece(board.BLACK_PAWN_A, board.A1)
+	b.SetPiece(board.WHITE_ROOK_KING, board.H1)
+
+	is := isThreatenedLeft(board.BLACK_PAWN_A, 0, 0, b)
+
+	assert.False(t, is)
+}
+
+func TestIsThreatenedRight_EmptyBoard(t *testing.T) {
+	b := &board.Board{}
+	b.SetPiece(board.BLACK_PAWN_A, board.E1)
+
+	is := isThreatenedRight(board.BLACK_PAWN_A, 0, 4, b)
+
+	assert.False(t, is)
+}
+
+func TestIsThreatenedRight_Close(t *testing.T) {
+	b := &board.Board{}
+	b.SetPiece(board.BLACK_PAWN_A, board.E1)
+	b.SetPiece(board.WHITE_ROOK_KING, board.F1)
+
+	is := isThreatenedRight(board.BLACK_PAWN_A, 0, 4, b)
+
+	assert.True(t, is)
+}
+
+func TestIsThreatenedRight_Far(t *testing.T) {
+	b := &board.Board{}
+	b.SetPiece(board.BLACK_PAWN_A, board.E1)
+	b.SetPiece(board.WHITE_ROOK_KING, board.G1)
+
+	is := isThreatenedRight(board.BLACK_PAWN_A, 0, 4, b)
+
+	assert.True(t, is)
+}
+
+func TestIsThreatenedRight_Farther(t *testing.T) {
+	b := &board.Board{}
+	b.SetPiece(board.BLACK_PAWN_A, board.E1)
+	b.SetPiece(board.WHITE_ROOK_KING, board.H1)
+
+	is := isThreatenedRight(board.BLACK_PAWN_A, 0, 4, b)
+
+	assert.True(t, is)
+}
+
+func TestIsThreatenedRight_NoRight(t *testing.T) {
+	b := &board.Board{}
+	b.SetPiece(board.BLACK_PAWN_A, board.H1)
+	b.SetPiece(board.WHITE_ROOK_KING, board.A1)
+
+	is := isThreatenedRight(board.BLACK_PAWN_A, 0, 7, b)
+
+	assert.False(t, is)
+}
+
+func TestIsInRangeForVerticalAttack_Pawn(t *testing.T) {
+	p := board.WHITE_PAWN_A
+	from := 0
+	to := 2
+
+	is := isInRangeForVerticalAttack(p, from, to)
+	assert.False(t, is)
+}
+
+func TestIsInRangeForVerticalAttack_Rook(t *testing.T) {
+	p := board.WHITE_ROOK_KING
+	from := 0
+	to := 5
+
+	is := isInRangeForVerticalAttack(p, from, to)
+	assert.True(t, is)
+}
+
+func TestIsInRangeForVerticalAttack_KingClose(t *testing.T) {
+	p := board.WHITE_KING
+	from := 0
+	to := 1
+
+	is := isInRangeForVerticalAttack(p, from, to)
+	assert.True(t, is)
+}
+
+func TestIsInRangeForVerticalAttack_KingFar(t *testing.T) {
+	p := board.WHITE_KING
+	from := 0
+	to := 3
+
+	is := isInRangeForVerticalAttack(p, from, to)
+	assert.False(t, is)
+}
+
+func TestIsAttackVertical_King(t *testing.T) {
+	is := isAttackVertical(board.BLACK_KING)
+	assert.True(t, is)
+}
+
+func TestIsAttackVertical_Bishop(t *testing.T) {
+	is := isAttackVertical(board.BLACK_BISHOP_KING)
+	assert.False(t, is)
+}
+
+func TestIsVerticalDanger_SameColor(t *testing.T) {
+	is := isVerticalDanger(board.WHITE_PAWN_A, board.WHITE_QUEEN, 0, 2)
+	assert.False(t, is)
+}
+
+func TestIsVerticalDanger_NotVerticalAttacker(t *testing.T) {
+	is := isVerticalDanger(board.WHITE_PAWN_A, board.BLACK_BISHOP_KING, 0, 2)
+	assert.False(t, is)
+}
+
+func TestIsVerticalDanger_OutOfRange(t *testing.T) {
+	is := isVerticalDanger(board.WHITE_PAWN_A, board.BLACK_KING, 0, 2)
+	assert.False(t, is)
+}
+
+func TestIsVerticalDanger_InDanger(t *testing.T) {
+	is := isVerticalDanger(board.WHITE_PAWN_A, board.BLACK_KING, 0, 1)
+	assert.False(t, is)
+}

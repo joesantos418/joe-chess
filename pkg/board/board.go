@@ -4,7 +4,12 @@ import (
 	"github.com/arquivei/foundationkit/errors"
 )
 
+// MAX_COL has been incorrectly defined as 8
+// I noticed this too late, we'll keep it like that for now
 const MAX_COL = 8
+
+// MAX_LIN has been incorrectly defined as 8
+// I noticed this too late, we'll keep it like that for now
 const MAX_LIN = 8
 
 type Square struct {

@@ -168,27 +168,29 @@ func isInRangeForVerticalAttack(p board.Piece, from, to int) bool {
 }
 
 func isThreatenedRight(p board.Piece, lin int, col int, b *board.Board) bool {
-	if col == board.MAX_COL {
+	if col == (board.MAX_COL - 1) {
 		return false
 	}
 
-	for i := col; i < board.MAX_COL; i++ {
-		if b.Squares[i][col].Piece != board.NO_PIECE {
-			return isHorizontalDanger(p, b.Squares[i][col].Piece, i, col)
+	for i := 1; i < (board.MAX_COL - col); i++ {
+		if b.Squares[lin][col+i].Piece != board.NO_PIECE {
+			return isHorizontalDanger(p, b.Squares[lin][col+i].Piece, col, col+i)
 		}
 	}
 
 	return false
 }
 
+// isThreatenedLeft checks if a piece @p in a square with coordinates @lin, @col
+// in a board @b has an horizontal threat to the left
 func isThreatenedLeft(p board.Piece, lin int, col int, b *board.Board) bool {
 	if col == 0 {
 		return false
 	}
 
-	for i := 0; i < col; i++ {
-		if b.Squares[i][col].Piece != board.NO_PIECE {
-			return isHorizontalDanger(p, b.Squares[i][col].Piece, i, col)
+	for i := 1; i <= col; i++ {
+		if b.Squares[lin][col-i].Piece != board.NO_PIECE {
+			return isHorizontalDanger(p, b.Squares[lin][col-i].Piece, col, col-i)
 		}
 	}
 
@@ -198,7 +200,7 @@ func isThreatenedLeft(p board.Piece, lin int, col int, b *board.Board) bool {
 func isHorizontalDanger(def, atk board.Piece, from int, to int) bool {
 	return getColor(def) != getColor(atk) &&
 		isAttackHorizontal(atk) &&
-		isInRangeForHorizontalAttack(def, from, to)
+		isInRangeForHorizontalAttack(atk, from, to)
 }
 
 func isAttackHorizontal(p board.Piece) bool {
