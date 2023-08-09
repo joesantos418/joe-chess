@@ -124,9 +124,9 @@ func isThreatenedDown(p board.Piece, lin int, col int, b *board.Board) bool {
 		return false
 	}
 
-	for i := 0; i < lin; i++ {
-		if b.Squares[i][col].Piece != board.NO_PIECE {
-			return isVerticalDanger(p, b.Squares[i][col].Piece, lin, i)
+	for i := 1; i <= lin; i++ {
+		if b.Squares[lin-i][col].Piece != board.NO_PIECE {
+			return isVerticalDanger(p, b.Squares[lin-i][col].Piece, lin, lin-i)
 		}
 	}
 
@@ -136,7 +136,7 @@ func isThreatenedDown(p board.Piece, lin int, col int, b *board.Board) bool {
 func isVerticalDanger(def, atk board.Piece, from int, to int) bool {
 	return getColor(def) != getColor(atk) &&
 		isAttackVertical(atk) &&
-		isInRangeForVerticalAttack(def, from, to)
+		isInRangeForVerticalAttack(atk, from, to)
 }
 
 func isAttackVertical(p board.Piece) bool {

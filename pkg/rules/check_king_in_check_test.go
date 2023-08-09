@@ -700,3 +700,52 @@ func TestIsVerticalDanger_InDanger(t *testing.T) {
 	is := isVerticalDanger(board.WHITE_PAWN_A, board.BLACK_KING, 0, 1)
 	assert.False(t, is)
 }
+
+func TestIsThreatenedDown_EmptyBoard(t *testing.T) {
+	b := &board.Board{}
+	b.SetPiece(board.BLACK_PAWN_A, board.A7)
+
+	is := isThreatenedDown(board.BLACK_PAWN_A, 6, 0, b)
+
+	assert.False(t, is)
+}
+
+func TestIsThreatenedDown_Close(t *testing.T) {
+	b := &board.Board{}
+	b.SetPiece(board.BLACK_PAWN_A, board.A7)
+	b.SetPiece(board.WHITE_ROOK_KING, board.A6)
+
+	is := isThreatenedDown(board.BLACK_PAWN_A, 6, 0, b)
+
+	assert.True(t, is)
+}
+
+func TestIsThreatenedDown_Far(t *testing.T) {
+	b := &board.Board{}
+	b.SetPiece(board.BLACK_PAWN_A, board.A7)
+	b.SetPiece(board.WHITE_ROOK_KING, board.A3)
+
+	is := isThreatenedDown(board.BLACK_PAWN_A, 6, 0, b)
+
+	assert.True(t, is)
+}
+
+func TestIsThreatenedDown_Farther(t *testing.T) {
+	b := &board.Board{}
+	b.SetPiece(board.BLACK_PAWN_A, board.A7)
+	b.SetPiece(board.WHITE_ROOK_KING, board.A1)
+
+	is := isThreatenedDown(board.BLACK_PAWN_A, 6, 0, b)
+
+	assert.True(t, is)
+}
+
+func TestIsThreatenedDown_NoDown(t *testing.T) {
+	b := &board.Board{}
+	b.SetPiece(board.BLACK_PAWN_A, board.A1)
+	b.SetPiece(board.WHITE_ROOK_KING, board.A3)
+
+	is := isThreatenedDown(board.BLACK_PAWN_A, 0, 0, b)
+
+	assert.False(t, is)
+}
