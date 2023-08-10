@@ -749,3 +749,52 @@ func TestIsThreatenedDown_NoDown(t *testing.T) {
 
 	assert.False(t, is)
 }
+
+func TestIsThreatenedUp_EmptyBoard(t *testing.T) {
+	b := &board.Board{}
+	b.SetPiece(board.BLACK_PAWN_A, board.A7)
+
+	is := isThreatenedUp(board.BLACK_PAWN_A, 6, 0, b)
+
+	assert.False(t, is)
+}
+
+func TestIsThreatenedUp_Close(t *testing.T) {
+	b := &board.Board{}
+	b.SetPiece(board.BLACK_PAWN_A, board.A2)
+	b.SetPiece(board.WHITE_ROOK_KING, board.A3)
+
+	is := isThreatenedUp(board.BLACK_PAWN_A, 1, 0, b)
+
+	assert.True(t, is)
+}
+
+func TestIsThreatenedUp_Far(t *testing.T) {
+	b := &board.Board{}
+	b.SetPiece(board.BLACK_PAWN_A, board.A2)
+	b.SetPiece(board.WHITE_ROOK_KING, board.A6)
+
+	is := isThreatenedUp(board.BLACK_PAWN_A, 1, 0, b)
+
+	assert.True(t, is)
+}
+
+func TestIsThreatenedUp_Farther(t *testing.T) {
+	b := &board.Board{}
+	b.SetPiece(board.BLACK_PAWN_A, board.A1)
+	b.SetPiece(board.WHITE_ROOK_KING, board.A7)
+
+	is := isThreatenedUp(board.BLACK_PAWN_A, 0, 0, b)
+
+	assert.True(t, is)
+}
+
+func TestIsThreatenedUp_NoUp(t *testing.T) {
+	b := &board.Board{}
+	b.SetPiece(board.BLACK_PAWN_A, board.A8)
+	b.SetPiece(board.WHITE_ROOK_KING, board.A3)
+
+	is := isThreatenedUp(board.BLACK_PAWN_A, 7, 0, b)
+
+	assert.False(t, is)
+}

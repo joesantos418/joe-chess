@@ -110,9 +110,9 @@ func isThreatenedUp(p board.Piece, lin int, col int, b *board.Board) bool {
 		return false
 	}
 
-	for i := lin; i < board.MAX_LIN; i++ {
-		if b.Squares[i][col].Piece != board.NO_PIECE {
-			return isVerticalDanger(p, b.Squares[i][col].Piece, lin, i)
+	for i := 1; i < (board.MAX_LIN - lin); i++ {
+		if b.Squares[lin+i][col].Piece != board.NO_PIECE {
+			return isVerticalDanger(p, b.Squares[lin+i][col].Piece, lin, lin+i)
 		}
 	}
 
