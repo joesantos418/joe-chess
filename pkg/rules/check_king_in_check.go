@@ -89,7 +89,7 @@ func isThreatenedL(p board.Piece, lin, col int, b *board.Board) bool {
 }
 
 func isDangerL(p board.Piece, lin, col int, b *board.Board) bool {
-	if lin < 0 || lin > board.MAX_COL || col < 0 || col > board.MAX_COL {
+	if lin < 0 || lin >= board.MAX_COL || col < 0 || col >= board.MAX_COL {
 		return false
 	}
 

@@ -798,3 +798,201 @@ func TestIsThreatenedUp_NoUp(t *testing.T) {
 
 	assert.False(t, is)
 }
+
+func TestIsLAttacker_Knight(t *testing.T) {
+	is := isLAttacker(board.WHITE_KNIGHT_QUEEN)
+	assert.True(t, is)
+}
+
+func TestIsLAttacker_Bishop(t *testing.T) {
+	is := isLAttacker(board.WHITE_BISHOP_QUEEN)
+	assert.False(t, is)
+}
+
+func TestIsDangerL_OutOfRange(t *testing.T) {
+	b := &board.Board{}
+	is := isDangerL(board.WHITE_PAWN_A, -1, 0, b)
+	assert.False(t, is)
+}
+
+func TestIsDangerL_EmptyBoard(t *testing.T) {
+	b := &board.Board{}
+	is := isDangerL(board.WHITE_PAWN_A, 0, 0, b)
+	assert.False(t, is)
+}
+
+func TestIsDangerL_SameColor(t *testing.T) {
+	b := &board.Board{}
+	b.SetPiece(board.WHITE_PAWN_A, board.A2)
+	b.SetPiece(board.WHITE_KNIGHT_KING, board.C3)
+
+	is := isDangerL(board.WHITE_PAWN_A, 2, 2, b)
+	assert.False(t, is)
+}
+
+func TestIsDangerL_Bishop(t *testing.T) {
+	b := &board.Board{}
+	b.SetPiece(board.WHITE_PAWN_A, board.A2)
+	b.SetPiece(board.WHITE_BISHOP_KING, board.C3)
+
+	is := isDangerL(board.WHITE_PAWN_A, 2, 2, b)
+	assert.False(t, is)
+}
+
+func TestIsDangerL_Danger(t *testing.T) {
+	b := &board.Board{}
+	b.SetPiece(board.WHITE_PAWN_A, board.A2)
+	b.SetPiece(board.BLACK_KNIGHT_KING, board.C3)
+
+	is := isDangerL(board.WHITE_PAWN_A, 2, 2, b)
+	assert.True(t, is)
+}
+
+func TestIsThreatenedL_EmptyBoard(t *testing.T) {
+	b := &board.Board{}
+
+	is := isThreatenedL(board.WHITE_PAWN_A, 2, 3, b)
+	assert.False(t, is)
+}
+
+func TestIsThreatenedL_TwoColumnsFar(t *testing.T) {
+	b := &board.Board{}
+	b.SetPiece(board.WHITE_PAWN_A, board.A2)
+	b.SetPiece(board.BLACK_KNIGHT_KING, board.C3)
+
+	is := isThreatenedL(board.WHITE_PAWN_A, 1, 0, b)
+	assert.True(t, is)
+}
+
+func TestIsThreatenedL_TwoLinesFar(t *testing.T) {
+	b := &board.Board{}
+	b.SetPiece(board.WHITE_PAWN_A, board.A2)
+	b.SetPiece(board.BLACK_KNIGHT_KING, board.B4)
+
+	is := isThreatenedL(board.WHITE_PAWN_A, 1, 0, b)
+	assert.True(t, is)
+}
+
+func TestIsThreatenedDiagonal_Danger(t *testing.T) {
+	b := &board.Board{}
+	b.SetPiece(board.WHITE_PAWN_A, board.A1)
+	b.SetPiece(board.BLACK_BISHOP_KING, board.H8)
+
+	is := isThreatenedDiagonal(board.WHITE_PAWN_A, 0, 0, b)
+	assert.True(t, is)
+}
+
+func TestIsThreatenedDiagonal_NoDanger(t *testing.T) {
+	b := &board.Board{}
+	b.SetPiece(board.WHITE_PAWN_A, board.A1)
+	b.SetPiece(board.BLACK_BISHOP_KING, board.F8)
+
+	is := isThreatenedDiagonal(board.WHITE_PAWN_A, 0, 0, b)
+	assert.False(t, is)
+}
+
+func TestIsThreatenedHorizontal_Danger(t *testing.T) {
+	b := &board.Board{}
+	b.SetPiece(board.WHITE_PAWN_A, board.A1)
+	b.SetPiece(board.BLACK_QUEEN, board.H1)
+
+	is := isThreatenedHorizontal(board.WHITE_PAWN_A, 0, 0, b)
+	assert.True(t, is)
+}
+
+func TestIsThreatenedHorizontal_NoDanger(t *testing.T) {
+	b := &board.Board{}
+	b.SetPiece(board.WHITE_PAWN_A, board.A1)
+	b.SetPiece(board.BLACK_QUEEN, board.H8)
+
+	is := isThreatenedHorizontal(board.WHITE_PAWN_A, 0, 0, b)
+	assert.False(t, is)
+}
+
+func TestIsThreatenedVertical_Danger(t *testing.T) {
+	b := &board.Board{}
+	b.SetPiece(board.WHITE_PAWN_A, board.A1)
+	b.SetPiece(board.BLACK_QUEEN, board.A8)
+
+	is := isThreatenedVertical(board.WHITE_PAWN_A, 0, 0, b)
+	assert.True(t, is)
+}
+
+func TestIsThreatenedVertical_NoDanger(t *testing.T) {
+	b := &board.Board{}
+	b.SetPiece(board.WHITE_PAWN_A, board.A1)
+	b.SetPiece(board.BLACK_QUEEN, board.H8)
+
+	is := isThreatenedVertical(board.WHITE_PAWN_A, 0, 0, b)
+	assert.False(t, is)
+}
+
+func TestGetCoordinates_A1(t *testing.T) {
+	b := &board.Board{}
+	b.SetPiece(board.WHITE_PAWN_A, board.A1)
+
+	lin, col := getCoordinates(board.WHITE_PAWN_A, b)
+
+	assert.Equal(t, 0, lin)
+	assert.Equal(t, 0, col)
+}
+
+func TestGetCoordinates_E4(t *testing.T) {
+	b := &board.Board{}
+	b.SetPiece(board.WHITE_PAWN_A, board.E4)
+
+	lin, col := getCoordinates(board.WHITE_PAWN_A, b)
+
+	assert.Equal(t, 3, lin)
+	assert.Equal(t, 4, col)
+}
+
+func TestGetCoordinates_H8(t *testing.T) {
+	b := &board.Board{}
+	b.SetPiece(board.WHITE_PAWN_A, board.H8)
+
+	lin, col := getCoordinates(board.WHITE_PAWN_A, b)
+
+	assert.Equal(t, 7, lin)
+	assert.Equal(t, 7, col)
+}
+
+func TestIsPieceInCheck_Check(t *testing.T) {
+	b := &board.Board{}
+	b.SetPiece(board.WHITE_PAWN_A, board.H8)
+	b.SetPiece(board.BLACK_ROOK_KING, board.H3)
+
+	is := isPieceInCheck(board.WHITE_PAWN_A, b)
+	assert.True(t, is)
+}
+
+func TestIsPieceInCheck_NoCheck(t *testing.T) {
+	b := &board.Board{}
+	b.SetPiece(board.WHITE_PAWN_A, board.H8)
+	b.SetPiece(board.BLACK_BISHOP_KING, board.H3)
+
+	is := isPieceInCheck(board.WHITE_PAWN_A, b)
+	assert.False(t, is)
+}
+
+func TestCheckKingInCheck_Check(t *testing.T) {
+	g := NewGame()
+	b := &board.Board{}
+
+	b.SetPiece(board.WHITE_KING, board.E4)
+	b.SetPiece(board.BLACK_QUEEN, board.H1)
+
+	is := checkKingInCheck(g, b)
+	assert.True(t, is)
+}
+
+func TestCheckKingInCheck_NoCheck(t *testing.T) {
+	g := NewGame()
+	b := &board.Board{}
+
+	b.SetPiece(board.WHITE_KING, board.E4)
+	b.SetPiece(board.BLACK_QUEEN, board.H2)
+
+	is := checkKingInCheck(g, b)
+	assert.False(t, is)
+}
