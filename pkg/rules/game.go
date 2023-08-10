@@ -21,12 +21,16 @@ func (c Color) String() string {
 }
 
 type Game struct {
-	Board              *board.Board
-	WhiteCaptured      []board.Piece
-	BlackCaptured      []board.Piece
-	NowPlays           Color
-	IsWhiteKingInCheck bool
-	IsBlackKingInCheck bool
+	Board                  *board.Board
+	WhiteCaptured          []board.Piece
+	BlackCaptured          []board.Piece
+	NowPlays               Color
+	HasWhiteKingMoved      bool `default:"false"`
+	HasWhiteRookKingMoved  bool `default:"false"`
+	HasWhiteRookQueenMoved bool `default:"false"`
+	HasBlackKingMoved      bool `default:"false"`
+	HasBlackRookKingMoved  bool `default:"false"`
+	HasBlackRookQueenMoved bool `default:"false"`
 }
 
 func NewGame() *Game {
@@ -54,12 +58,12 @@ func (g *Game) ProcessMove(p board.Piece, from, to board.SquareName) error {
 
 	processCapture(p, to, g)
 	err = g.Board.Move(p, from, to)
-
 	if err != nil {
 		return err
 	}
 
 	switchColorTurn(g)
+	updateCastlingData(g, p)
 
 	return nil
 }
@@ -82,5 +86,22 @@ func switchColorTurn(g *Game) {
 		g.NowPlays = BLACKS
 	} else {
 		g.NowPlays = WHITES
+	}
+}
+
+func updateCastlingData(g *Game, p board.Piece) {
+	switch p {
+	case board.WHITE_KING:
+		g.HasWhiteKingMoved = true
+	case board.BLACK_KING:
+		g.HasBlackKingMoved = true
+	case board.WHITE_ROOK_KING:
+		g.HasWhiteRookKingMoved = true
+	case board.WHITE_ROOK_QUEEN:
+		g.HasWhiteRookQueenMoved = true
+	case board.BLACK_ROOK_KING:
+		g.HasBlackRookKingMoved = true
+	case board.BLACK_ROOK_QUEEN:
+		g.HasBlackRookQueenMoved = true
 	}
 }
