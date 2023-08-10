@@ -15,23 +15,27 @@ const (
 	SW
 )
 
-func isKingInCheck(p board.Piece, from board.SquareName, to board.SquareName, g *Game) bool {
+func isKingInCheck(p board.Piece, from board.SquareName, to board.SquareName, g *Game) (bool, error) {
 	b := getClonedBoard(g)
-	b = simulateMove(p, from, to, b)
-	return checkKingInCheck(g, b)
+	b, err := simulateMove(p, from, to, b)
+	if err != nil {
+		return false, err
+	}
+
+	return checkKingInCheck(g, b), nil
 }
 
 func getClonedBoard(g *Game) *board.Board {
 	return g.Board.Clone()
 }
 
-func simulateMove(p board.Piece, from board.SquareName, to board.SquareName, b *board.Board) *board.Board {
+func simulateMove(p board.Piece, from board.SquareName, to board.SquareName, b *board.Board) (*board.Board, error) {
 	err := b.Move(p, from, to)
 	if err != nil {
-		return &board.Board{}
+		return &board.Board{}, err
 	}
 
-	return b
+	return b, nil
 }
 
 func checkKingInCheck(g *Game, b *board.Board) bool {

@@ -37,7 +37,11 @@ func NewGame() *Game {
 }
 
 func (g *Game) ProcessMove(p board.Piece, from, to board.SquareName) error {
-	ok, reason := isValidMove(p, from, to, g)
+	ok, reason, err := isValidMove(p, from, to, g)
+	if err != nil {
+		return err
+	}
+
 	if !ok {
 		return errors.E(
 			"invalid move",
@@ -49,7 +53,7 @@ func (g *Game) ProcessMove(p board.Piece, from, to board.SquareName) error {
 	}
 
 	processCapture(p, to, g)
-	err := g.Board.Move(p, from, to)
+	err = g.Board.Move(p, from, to)
 
 	if err != nil {
 		return err

@@ -9,6 +9,7 @@ const (
 	MOVE_INCORRECT
 	EMPTY_SQUARE
 	KING_IN_CHECK
+	INVALID_MOVE
 )
 
 func (r InvalidMoveReason) String() string {
@@ -25,6 +26,8 @@ func (r InvalidMoveReason) String() string {
 		return "EMPTY_SQUARE"
 	case KING_IN_CHECK:
 		return "KING_IN_CHECK"
+	case INVALID_MOVE:
+		return "INVALID_MOVE"
 	}
 
 	return "Unknown reason"

@@ -996,3 +996,57 @@ func TestCheckKingInCheck_NoCheck(t *testing.T) {
 	is := checkKingInCheck(g, b)
 	assert.False(t, is)
 }
+
+func TestSimulateMove(t *testing.T) {
+	before := NewGame().Board
+
+	after, err := simulateMove(board.WHITE_PAWN_A, board.A2, board.A4, before)
+
+	assert.Nil(t, err)
+	assert.Equal(t, board.WHITE_PAWN_A, after.GetPiece(board.A4))
+}
+
+func TestSimulateMove_Err(t *testing.T) {
+	before := NewGame().Board
+
+	_, err := simulateMove(board.WHITE_PAWN_A, board.A3, board.A5, before)
+
+	assert.NotNil(t, err)
+	assert.Equal(t, "cannot find piece to move [piece=WHITE_PAWN_A,from=A3,to=A5]", err.Error())
+}
+
+func TestGetClonedBoard(t *testing.T) {
+	g := NewGame()
+	b := getClonedBoard(g)
+
+	assert.Equal(t, g.Board, b)
+}
+
+func TestIsKingInCheck_NoCheck(t *testing.T) {
+	g := NewGame()
+
+	is, err := isKingInCheck(board.WHITE_PAWN_A, board.A2, board.A4, g)
+
+	assert.Nil(t, err)
+	assert.False(t, is)
+}
+
+func TestIsKingInCheck_Error(t *testing.T) {
+	g := NewGame()
+
+	is, err := isKingInCheck(board.WHITE_PAWN_A, board.A3, board.A4, g)
+
+	assert.NotNil(t, err)
+	assert.False(t, is)
+}
+
+func TestIsKingInCheck_Check(t *testing.T) {
+	g := NewGame()
+
+	g.Board.SetPiece(board.BLACK_QUEEN, board.E2)
+
+	is, err := isKingInCheck(board.WHITE_PAWN_A, board.A2, board.A4, g)
+
+	assert.Nil(t, err)
+	assert.True(t, is)
+}
