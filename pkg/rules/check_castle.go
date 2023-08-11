@@ -53,6 +53,17 @@ func hasKingMoved(p board.Piece, g *Game) bool {
 }
 
 func hasRookMoved(to board.SquareName, g *Game) bool {
+	switch to {
+	case board.G1:
+		return g.HasWhiteRookKingMoved
+	case board.C1:
+		return g.HasWhiteRookQueenMoved
+	case board.G8:
+		return g.HasBlackRookKingMoved
+	case board.C8:
+		return g.HasBlackRookQueenMoved
+	}
+
 	return false
 }
 

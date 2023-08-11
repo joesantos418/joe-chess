@@ -51,3 +51,50 @@ func TestHasKingMoved_Yes(t *testing.T) {
 	has := hasKingMoved(board.WHITE_KING, g)
 	assert.True(t, has)
 }
+
+func TestHasRookMovedNewGame(t *testing.T) {
+	g := NewGame()
+	has := hasRookMoved(board.E4, g)
+
+	assert.False(t, has)
+}
+
+func TestHasRookMoved_NoCastle(t *testing.T) {
+	g := NewGame()
+
+	err := g.ProcessMove(board.WHITE_PAWN_A, board.A2, board.A4)
+	assert.Nil(t, err)
+
+	err = g.ProcessMove(board.BLACK_PAWN_E, board.E7, board.E5)
+	assert.Nil(t, err)
+
+	has := hasRookMoved(board.A2, g)
+	assert.False(t, has)
+}
+
+func TestHasRookMoved_CastleMoved(t *testing.T) {
+	g := NewGame()
+
+	g.Board.SetPiece(board.NO_PIECE, board.B1)
+	g.Board.SetPiece(board.NO_PIECE, board.C1)
+	g.Board.SetPiece(board.NO_PIECE, board.D1)
+	g.Board.SetPiece(board.NO_PIECE, board.A2)
+
+	err := g.ProcessMove(board.WHITE_ROOK_QUEEN, board.A1, board.A4)
+	assert.Nil(t, err)
+
+	has := hasRookMoved(board.C1, g)
+	assert.True(t, has)
+}
+
+func TestHasRookMoved_Castle(t *testing.T) {
+	g := NewGame()
+
+	g.Board.SetPiece(board.NO_PIECE, board.B1)
+	g.Board.SetPiece(board.NO_PIECE, board.C1)
+	g.Board.SetPiece(board.NO_PIECE, board.D1)
+	g.Board.SetPiece(board.NO_PIECE, board.A2)
+
+	has := hasRookMoved(board.C1, g)
+	assert.False(t, has)
+}
