@@ -17,8 +17,6 @@ func TestIsKing_King(t *testing.T) {
 	assert.True(t, is)
 }
 
-// errors here for tomorrow
-
 func TestHasKingMoved_NewGame(t *testing.T) {
 	g := NewGame()
 	has := hasKingMoved(board.WHITE_KING, g)
@@ -97,4 +95,8 @@ func TestHasRookMoved_Castle(t *testing.T) {
 
 	has := hasRookMoved(board.C1, g)
 	assert.False(t, has)
+}
+
+func TestIsPathFree(t *testing.T) {
+
 }
