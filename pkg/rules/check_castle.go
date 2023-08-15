@@ -34,11 +34,7 @@ func canCastle(p board.Piece, from, to board.SquareName, g *Game) (bool, error) 
 		return false, nil
 	}
 
-	isFree, err := isPathFree(p, from, to, g)
-	if err != nil {
-		return false, err
-	}
-
+	isFree := isPathFree(p, from, to, g)
 	if !isFree {
 		return false, nil
 	}
@@ -77,6 +73,37 @@ func hasRookMoved(to board.SquareName, g *Game) bool {
 	return false
 }
 
-func isPathFree(p board.Piece, from, to board.SquareName, g *Game) (bool, error) {
-	return false, nil
+func isPathFree(p board.Piece, from, to board.SquareName, g *Game) bool {
+	switch to {
+	case board.G1:
+		return isPathFreeForShortWhiteCastle(g.Board)
+	case board.C1:
+		return isPathFreeForLongWhiteCastle(g.Board)
+	case board.G8:
+		return isPathFreeForShortBlackCastle(g.Board)
+	case board.C8:
+		return isPathFreeForLongBlackCastle(g.Board)
+	}
+
+	return false
+}
+
+func isPathFreeForShortWhiteCastle(b *board.Board) bool {
+	p := b.GetPiece(board.F1)
+	return p == board.NO_PIECE && !isPieceInCheck(p, b)
+}
+
+func isPathFreeForLongWhiteCastle(b *board.Board) bool {
+	p := b.GetPiece(board.D1)
+	return p == board.NO_PIECE && !isPieceInCheck(p, b)
+}
+
+func isPathFreeForShortBlackCastle(b *board.Board) bool {
+	p := b.GetPiece(board.F8)
+	return p == board.NO_PIECE && !isPieceInCheck(p, b)
+}
+
+func isPathFreeForLongBlackCastle(b *board.Board) bool {
+	p := b.GetPiece(board.D8)
+	return p == board.NO_PIECE && !isPieceInCheck(p, b)
 }
