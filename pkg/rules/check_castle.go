@@ -2,6 +2,16 @@ package rules
 
 import "github.com/joesantos418/joe-chess/pkg/board"
 
+func isCastle(p board.Piece, to board.SquareName) bool {
+	if p == board.WHITE_KING {
+		return to == board.G1 || to == board.C1
+	} else if p == board.BLACK_KING {
+		return to == board.G8 || to == board.C8
+	}
+
+	return false
+}
+
 func canCastle(p board.Piece, from, to board.SquareName, g *Game) (bool, error) {
 	if !isKing(p) {
 		return false, nil

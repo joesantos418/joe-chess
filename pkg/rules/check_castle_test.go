@@ -7,6 +7,21 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestIsCastle_NoKing(t *testing.T) {
+	is := isCastle(board.BLACK_BISHOP_KING, board.G4)
+	assert.False(t, is)
+}
+
+func TestIsCastle_NoCastle(t *testing.T) {
+	is := isCastle(board.WHITE_KING, board.E2)
+	assert.False(t, is)
+}
+
+func TestIsCastle_Castle(t *testing.T) {
+	is := isCastle(board.WHITE_KING, board.C1)
+	assert.True(t, is)
+}
+
 func TestIsKing_Pawn(t *testing.T) {
 	is := isKing(board.WHITE_PAWN_A)
 	assert.False(t, is)
