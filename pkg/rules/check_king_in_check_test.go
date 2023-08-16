@@ -195,10 +195,10 @@ func TestIsAttackDiagonal(t *testing.T) {
 }
 
 func TestIsDiagonalDanger(t *testing.T) {
-	is := isDiagonalDanger(board.WHITE_PAWN_A, board.BLACK_PAWN_B, 6, 1, 5, 0)
+	is := isDiagonalDanger(board.BLACK_PAWN_B, 6, 1, 5, 0, WHITES)
 	assert.True(t, is)
 
-	is = isDiagonalDanger(board.WHITE_PAWN_A, board.BLACK_PAWN_B, 6, 1, 4, 0)
+	is = isDiagonalDanger(board.BLACK_PAWN_B, 6, 1, 4, 0, WHITES)
 	assert.False(t, is)
 }
 
@@ -209,7 +209,7 @@ func TestIsThreatenedNE_EmptyBoard(t *testing.T) {
 	D4Lin := 3
 	D4Col := 3
 
-	is := isThreatenedNE(board.WHITE_BISHOP_QUEEN, D4Lin, D4Col, b)
+	is := isThreatenedNE(D4Lin, D4Col, b, WHITES)
 	assert.False(t, is)
 }
 
@@ -263,7 +263,7 @@ func TestIsThreatenedNE_OtherPiecesNoneInDiagonal(t *testing.T) {
 	D4Lin := 3
 	D4Col := 3
 
-	is := isThreatenedNE(board.WHITE_BISHOP_QUEEN, D4Lin, D4Col, b)
+	is := isThreatenedNE(D4Lin, D4Col, b, WHITES)
 
 	assert.False(t, is)
 }
@@ -277,7 +277,7 @@ func TestIsThreatenedNE_OtherPieceInDiagonalClose(t *testing.T) {
 
 	D4Lin := 3
 	D4Col := 3
-	is := isThreatenedNE(board.WHITE_BISHOP_QUEEN, D4Lin, D4Col, b)
+	is := isThreatenedNE(D4Lin, D4Col, b, WHITES)
 
 	assert.True(t, is)
 }
@@ -291,7 +291,7 @@ func TestIsThreatenedNE_OtherPieceInDiagonalFar(t *testing.T) {
 
 	D4Lin := 3
 	D4Col := 3
-	is := isThreatenedNE(board.WHITE_BISHOP_QUEEN, D4Lin, D4Col, b)
+	is := isThreatenedNE(D4Lin, D4Col, b, WHITES)
 
 	assert.True(t, is)
 }
@@ -305,7 +305,7 @@ func TestIsThreatenedNE_OtherPieceInDiagonalFarthest(t *testing.T) {
 
 	D4Lin := 3
 	D4Col := 3
-	is := isThreatenedNE(board.WHITE_BISHOP_QUEEN, D4Lin, D4Col, b)
+	is := isThreatenedNE(D4Lin, D4Col, b, WHITES)
 
 	assert.True(t, is)
 }
@@ -319,7 +319,7 @@ func TestIsThreatenedNE_OtherWhitePieceInDiagonalClose(t *testing.T) {
 
 	D4Lin := 3
 	D4Col := 3
-	is := isThreatenedNE(board.WHITE_BISHOP_QUEEN, D4Lin, D4Col, b)
+	is := isThreatenedNE(D4Lin, D4Col, b, WHITES)
 
 	assert.False(t, is)
 }
@@ -333,7 +333,7 @@ func TestIsThreatenedNE_OtherWhitePieceInDiagonalFar(t *testing.T) {
 
 	D4Lin := 3
 	D4Col := 3
-	is := isThreatenedNE(board.WHITE_BISHOP_QUEEN, D4Lin, D4Col, b)
+	is := isThreatenedNE(D4Lin, D4Col, b, WHITES)
 
 	assert.False(t, is)
 }
@@ -347,7 +347,7 @@ func TestIsThreatenedNE_OtherWhitePieceInDiagonalFarthest(t *testing.T) {
 
 	D4Lin := 3
 	D4Col := 3
-	is := isThreatenedNE(board.WHITE_BISHOP_QUEEN, D4Lin, D4Col, b)
+	is := isThreatenedNE(D4Lin, D4Col, b, WHITES)
 
 	assert.False(t, is)
 }
@@ -397,19 +397,19 @@ func TestIsThreatenedNW(t *testing.T) {
 
 	b.SetPiece(board.WHITE_BISHOP_QUEEN, board.D4)
 
-	is := isThreatenedNW(board.WHITE_BISHOP_QUEEN, 3, 3, b)
+	is := isThreatenedNW(3, 3, b, WHITES)
 	assert.False(t, is)
 
 	b.SetPiece(board.BLACK_BISHOP_KING, board.C6)
-	is = isThreatenedNW(board.WHITE_BISHOP_QUEEN, 3, 3, b)
+	is = isThreatenedNW(3, 3, b, WHITES)
 	assert.False(t, is)
 
 	b.SetPiece(board.BLACK_BISHOP_KING, board.B5)
-	is = isThreatenedNW(board.WHITE_BISHOP_QUEEN, 3, 3, b)
+	is = isThreatenedNW(3, 3, b, WHITES)
 	assert.False(t, is)
 
 	b.SetPiece(board.BLACK_BISHOP_KING, board.B6)
-	is = isThreatenedNW(board.WHITE_BISHOP_QUEEN, 3, 3, b)
+	is = isThreatenedNW(3, 3, b, WHITES)
 	assert.True(t, is)
 }
 
@@ -418,27 +418,27 @@ func TestIsThreatenedSE(t *testing.T) {
 
 	b.SetPiece(board.WHITE_BISHOP_QUEEN, board.D4)
 
-	is := isThreatenedSE(board.WHITE_BISHOP_QUEEN, 3, 3, b)
+	is := isThreatenedSE(3, 3, b, WHITES)
 	assert.False(t, is)
 
 	b.SetPiece(board.BLACK_BISHOP_KING, board.E2)
-	is = isThreatenedSE(board.WHITE_BISHOP_QUEEN, 3, 3, b)
+	is = isThreatenedSE(3, 3, b, WHITES)
 	assert.False(t, is)
 
 	b.SetPiece(board.BLACK_BISHOP_KING, board.F3)
-	is = isThreatenedSE(board.WHITE_BISHOP_QUEEN, 3, 3, b)
+	is = isThreatenedSE(3, 3, b, WHITES)
 	assert.False(t, is)
 
 	b.SetPiece(board.BLACK_BISHOP_KING, board.G1)
-	is = isThreatenedSE(board.WHITE_BISHOP_QUEEN, 3, 3, b)
+	is = isThreatenedSE(3, 3, b, WHITES)
 	assert.True(t, is)
 
 	b.SetPiece(board.NO_PIECE, board.G1)
-	is = isThreatenedSE(board.WHITE_BISHOP_QUEEN, 3, 3, b)
+	is = isThreatenedSE(3, 3, b, WHITES)
 	assert.False(t, is)
 
 	b.SetPiece(board.BLACK_BISHOP_KING, board.E3)
-	is = isThreatenedSE(board.WHITE_BISHOP_QUEEN, 3, 3, b)
+	is = isThreatenedSE(3, 3, b, WHITES)
 	assert.True(t, is)
 }
 
@@ -447,27 +447,27 @@ func TestIsThreatenedSW(t *testing.T) {
 
 	b.SetPiece(board.WHITE_BISHOP_QUEEN, board.D4)
 
-	is := isThreatenedSW(board.WHITE_BISHOP_QUEEN, 3, 3, b)
+	is := isThreatenedSW(3, 3, b, WHITES)
 	assert.False(t, is)
 
 	b.SetPiece(board.BLACK_BISHOP_KING, board.C2)
-	is = isThreatenedSW(board.WHITE_BISHOP_QUEEN, 3, 3, b)
+	is = isThreatenedSW(3, 3, b, WHITES)
 	assert.False(t, is)
 
 	b.SetPiece(board.BLACK_BISHOP_KING, board.B3)
-	is = isThreatenedSW(board.WHITE_BISHOP_QUEEN, 3, 3, b)
+	is = isThreatenedSW(3, 3, b, WHITES)
 	assert.False(t, is)
 
 	b.SetPiece(board.BLACK_BISHOP_KING, board.A1)
-	is = isThreatenedSW(board.WHITE_BISHOP_QUEEN, 3, 3, b)
+	is = isThreatenedSW(3, 3, b, WHITES)
 	assert.True(t, is)
 
 	b.SetPiece(board.NO_PIECE, board.A1)
-	is = isThreatenedSW(board.WHITE_BISHOP_QUEEN, 3, 3, b)
+	is = isThreatenedSW(3, 3, b, WHITES)
 	assert.False(t, is)
 
 	b.SetPiece(board.BLACK_BISHOP_KING, board.C3)
-	is = isThreatenedSW(board.WHITE_BISHOP_QUEEN, 3, 3, b)
+	is = isThreatenedSW(3, 3, b, WHITES)
 	assert.True(t, is)
 }
 
@@ -518,22 +518,22 @@ func TestIsAttackHorizontal_Bishop(t *testing.T) {
 }
 
 func TestIsHorizontalDanger_SameColor(t *testing.T) {
-	is := isHorizontalDanger(board.WHITE_PAWN_A, board.WHITE_QUEEN, 0, 2)
+	is := isHorizontalDanger(board.WHITE_QUEEN, 0, 2, WHITES)
 	assert.False(t, is)
 }
 
 func TestIsHorizontalDanger_NotHorizontalAttacker(t *testing.T) {
-	is := isHorizontalDanger(board.WHITE_PAWN_A, board.BLACK_BISHOP_KING, 0, 2)
+	is := isHorizontalDanger(board.BLACK_BISHOP_KING, 0, 2, WHITES)
 	assert.False(t, is)
 }
 
 func TestIsHorizontalDanger_OutOfRange(t *testing.T) {
-	is := isHorizontalDanger(board.WHITE_PAWN_A, board.BLACK_KING, 0, 2)
+	is := isHorizontalDanger(board.BLACK_KING, 0, 2, WHITES)
 	assert.False(t, is)
 }
 
 func TestIsHorizontalDanger_InDanger(t *testing.T) {
-	is := isHorizontalDanger(board.WHITE_PAWN_A, board.BLACK_KING, 0, 1)
+	is := isHorizontalDanger(board.BLACK_KING, 0, 1, BLACKS)
 	assert.False(t, is)
 }
 
@@ -541,7 +541,7 @@ func TestIsThreatenedLeft_EmptyBoard(t *testing.T) {
 	b := &board.Board{}
 	b.SetPiece(board.BLACK_PAWN_A, board.E1)
 
-	is := isThreatenedLeft(board.BLACK_PAWN_A, 0, 4, b)
+	is := isThreatenedLeft(0, 4, b, BLACKS)
 
 	assert.False(t, is)
 }
@@ -551,7 +551,7 @@ func TestIsThreatenedLeft_Close(t *testing.T) {
 	b.SetPiece(board.BLACK_PAWN_A, board.E1)
 	b.SetPiece(board.WHITE_ROOK_KING, board.D1)
 
-	is := isThreatenedLeft(board.BLACK_PAWN_A, 0, 4, b)
+	is := isThreatenedLeft(0, 4, b, BLACKS)
 
 	assert.True(t, is)
 }
@@ -561,7 +561,7 @@ func TestIsThreatenedLeft_Far(t *testing.T) {
 	b.SetPiece(board.BLACK_PAWN_A, board.E1)
 	b.SetPiece(board.WHITE_ROOK_KING, board.B1)
 
-	is := isThreatenedLeft(board.BLACK_PAWN_A, 0, 4, b)
+	is := isThreatenedLeft(0, 4, b, BLACKS)
 
 	assert.True(t, is)
 }
@@ -571,7 +571,7 @@ func TestIsThreatenedLeft_Farther(t *testing.T) {
 	b.SetPiece(board.BLACK_PAWN_A, board.H1)
 	b.SetPiece(board.WHITE_ROOK_KING, board.A1)
 
-	is := isThreatenedLeft(board.BLACK_PAWN_A, 0, 4, b)
+	is := isThreatenedLeft(0, 4, b, BLACKS)
 
 	assert.True(t, is)
 }
@@ -581,7 +581,7 @@ func TestIsThreatenedLeft_NoLeft(t *testing.T) {
 	b.SetPiece(board.BLACK_PAWN_A, board.A1)
 	b.SetPiece(board.WHITE_ROOK_KING, board.H1)
 
-	is := isThreatenedLeft(board.BLACK_PAWN_A, 0, 0, b)
+	is := isThreatenedLeft(0, 0, b, BLACKS)
 
 	assert.False(t, is)
 }
@@ -590,7 +590,7 @@ func TestIsThreatenedRight_EmptyBoard(t *testing.T) {
 	b := &board.Board{}
 	b.SetPiece(board.BLACK_PAWN_A, board.E1)
 
-	is := isThreatenedRight(board.BLACK_PAWN_A, 0, 4, b)
+	is := isThreatenedRight(0, 4, b, BLACKS)
 
 	assert.False(t, is)
 }
@@ -600,7 +600,7 @@ func TestIsThreatenedRight_Close(t *testing.T) {
 	b.SetPiece(board.BLACK_PAWN_A, board.E1)
 	b.SetPiece(board.WHITE_ROOK_KING, board.F1)
 
-	is := isThreatenedRight(board.BLACK_PAWN_A, 0, 4, b)
+	is := isThreatenedRight(0, 4, b, BLACKS)
 
 	assert.True(t, is)
 }
@@ -610,7 +610,7 @@ func TestIsThreatenedRight_Far(t *testing.T) {
 	b.SetPiece(board.BLACK_PAWN_A, board.E1)
 	b.SetPiece(board.WHITE_ROOK_KING, board.G1)
 
-	is := isThreatenedRight(board.BLACK_PAWN_A, 0, 4, b)
+	is := isThreatenedRight(0, 4, b, BLACKS)
 
 	assert.True(t, is)
 }
@@ -620,7 +620,7 @@ func TestIsThreatenedRight_Farther(t *testing.T) {
 	b.SetPiece(board.BLACK_PAWN_A, board.E1)
 	b.SetPiece(board.WHITE_ROOK_KING, board.H1)
 
-	is := isThreatenedRight(board.BLACK_PAWN_A, 0, 4, b)
+	is := isThreatenedRight(0, 4, b, BLACKS)
 
 	assert.True(t, is)
 }
@@ -630,7 +630,7 @@ func TestIsThreatenedRight_NoRight(t *testing.T) {
 	b.SetPiece(board.BLACK_PAWN_A, board.H1)
 	b.SetPiece(board.WHITE_ROOK_KING, board.A1)
 
-	is := isThreatenedRight(board.BLACK_PAWN_A, 0, 7, b)
+	is := isThreatenedRight(0, 7, b, BLACKS)
 
 	assert.False(t, is)
 }
@@ -682,22 +682,22 @@ func TestIsAttackVertical_Bishop(t *testing.T) {
 }
 
 func TestIsVerticalDanger_SameColor(t *testing.T) {
-	is := isVerticalDanger(board.WHITE_PAWN_A, board.WHITE_QUEEN, 0, 2)
+	is := isVerticalDanger(board.WHITE_QUEEN, 0, 2, WHITES)
 	assert.False(t, is)
 }
 
 func TestIsVerticalDanger_NotVerticalAttacker(t *testing.T) {
-	is := isVerticalDanger(board.WHITE_PAWN_A, board.BLACK_BISHOP_KING, 0, 2)
+	is := isVerticalDanger(board.BLACK_BISHOP_KING, 0, 2, BLACKS)
 	assert.False(t, is)
 }
 
 func TestIsVerticalDanger_OutOfRange(t *testing.T) {
-	is := isVerticalDanger(board.WHITE_PAWN_A, board.BLACK_KING, 0, 2)
+	is := isVerticalDanger(board.BLACK_KING, 0, 2, BLACKS)
 	assert.False(t, is)
 }
 
 func TestIsVerticalDanger_InDanger(t *testing.T) {
-	is := isVerticalDanger(board.WHITE_PAWN_A, board.BLACK_KING, 0, 1)
+	is := isVerticalDanger(board.BLACK_KING, 0, 1, BLACKS)
 	assert.False(t, is)
 }
 
@@ -705,7 +705,7 @@ func TestIsThreatenedDown_EmptyBoard(t *testing.T) {
 	b := &board.Board{}
 	b.SetPiece(board.BLACK_PAWN_A, board.A7)
 
-	is := isThreatenedDown(board.BLACK_PAWN_A, 6, 0, b)
+	is := isThreatenedDown(6, 0, b, BLACKS)
 
 	assert.False(t, is)
 }
@@ -715,7 +715,7 @@ func TestIsThreatenedDown_Close(t *testing.T) {
 	b.SetPiece(board.BLACK_PAWN_A, board.A7)
 	b.SetPiece(board.WHITE_ROOK_KING, board.A6)
 
-	is := isThreatenedDown(board.BLACK_PAWN_A, 6, 0, b)
+	is := isThreatenedDown(6, 0, b, BLACKS)
 
 	assert.True(t, is)
 }
@@ -725,7 +725,7 @@ func TestIsThreatenedDown_Far(t *testing.T) {
 	b.SetPiece(board.BLACK_PAWN_A, board.A7)
 	b.SetPiece(board.WHITE_ROOK_KING, board.A3)
 
-	is := isThreatenedDown(board.BLACK_PAWN_A, 6, 0, b)
+	is := isThreatenedDown(6, 0, b, BLACKS)
 
 	assert.True(t, is)
 }
@@ -735,7 +735,7 @@ func TestIsThreatenedDown_Farther(t *testing.T) {
 	b.SetPiece(board.BLACK_PAWN_A, board.A7)
 	b.SetPiece(board.WHITE_ROOK_KING, board.A1)
 
-	is := isThreatenedDown(board.BLACK_PAWN_A, 6, 0, b)
+	is := isThreatenedDown(6, 0, b, BLACKS)
 
 	assert.True(t, is)
 }
@@ -745,7 +745,7 @@ func TestIsThreatenedDown_NoDown(t *testing.T) {
 	b.SetPiece(board.BLACK_PAWN_A, board.A1)
 	b.SetPiece(board.WHITE_ROOK_KING, board.A3)
 
-	is := isThreatenedDown(board.BLACK_PAWN_A, 0, 0, b)
+	is := isThreatenedDown(0, 0, b, BLACKS)
 
 	assert.False(t, is)
 }
@@ -754,7 +754,7 @@ func TestIsThreatenedUp_EmptyBoard(t *testing.T) {
 	b := &board.Board{}
 	b.SetPiece(board.BLACK_PAWN_A, board.A7)
 
-	is := isThreatenedUp(board.BLACK_PAWN_A, 6, 0, b)
+	is := isThreatenedUp(6, 0, b, WHITES)
 
 	assert.False(t, is)
 }
@@ -764,7 +764,7 @@ func TestIsThreatenedUp_Close(t *testing.T) {
 	b.SetPiece(board.BLACK_PAWN_A, board.A2)
 	b.SetPiece(board.WHITE_ROOK_KING, board.A3)
 
-	is := isThreatenedUp(board.BLACK_PAWN_A, 1, 0, b)
+	is := isThreatenedUp(1, 0, b, BLACKS)
 
 	assert.True(t, is)
 }
@@ -774,7 +774,7 @@ func TestIsThreatenedUp_Far(t *testing.T) {
 	b.SetPiece(board.BLACK_PAWN_A, board.A2)
 	b.SetPiece(board.WHITE_ROOK_KING, board.A6)
 
-	is := isThreatenedUp(board.BLACK_PAWN_A, 1, 0, b)
+	is := isThreatenedUp(1, 0, b, BLACKS)
 
 	assert.True(t, is)
 }
@@ -784,7 +784,7 @@ func TestIsThreatenedUp_Farther(t *testing.T) {
 	b.SetPiece(board.BLACK_PAWN_A, board.A1)
 	b.SetPiece(board.WHITE_ROOK_KING, board.A7)
 
-	is := isThreatenedUp(board.BLACK_PAWN_A, 0, 0, b)
+	is := isThreatenedUp(0, 0, b, BLACKS)
 
 	assert.True(t, is)
 }
@@ -794,7 +794,7 @@ func TestIsThreatenedUp_NoUp(t *testing.T) {
 	b.SetPiece(board.BLACK_PAWN_A, board.A8)
 	b.SetPiece(board.WHITE_ROOK_KING, board.A3)
 
-	is := isThreatenedUp(board.BLACK_PAWN_A, 7, 0, b)
+	is := isThreatenedUp(7, 0, b, BLACKS)
 
 	assert.False(t, is)
 }
@@ -811,13 +811,13 @@ func TestIsLAttacker_Bishop(t *testing.T) {
 
 func TestIsDangerL_OutOfRange(t *testing.T) {
 	b := &board.Board{}
-	is := isDangerL(board.WHITE_PAWN_A, -1, 0, b)
+	is := isDangerL(-1, 0, b, WHITES)
 	assert.False(t, is)
 }
 
 func TestIsDangerL_EmptyBoard(t *testing.T) {
 	b := &board.Board{}
-	is := isDangerL(board.WHITE_PAWN_A, 0, 0, b)
+	is := isDangerL(0, 0, b, WHITES)
 	assert.False(t, is)
 }
 
@@ -826,7 +826,7 @@ func TestIsDangerL_SameColor(t *testing.T) {
 	b.SetPiece(board.WHITE_PAWN_A, board.A2)
 	b.SetPiece(board.WHITE_KNIGHT_KING, board.C3)
 
-	is := isDangerL(board.WHITE_PAWN_A, 2, 2, b)
+	is := isDangerL(2, 2, b, WHITES)
 	assert.False(t, is)
 }
 
@@ -835,7 +835,7 @@ func TestIsDangerL_Bishop(t *testing.T) {
 	b.SetPiece(board.WHITE_PAWN_A, board.A2)
 	b.SetPiece(board.WHITE_BISHOP_KING, board.C3)
 
-	is := isDangerL(board.WHITE_PAWN_A, 2, 2, b)
+	is := isDangerL(2, 2, b, WHITES)
 	assert.False(t, is)
 }
 
@@ -844,14 +844,14 @@ func TestIsDangerL_Danger(t *testing.T) {
 	b.SetPiece(board.WHITE_PAWN_A, board.A2)
 	b.SetPiece(board.BLACK_KNIGHT_KING, board.C3)
 
-	is := isDangerL(board.WHITE_PAWN_A, 2, 2, b)
+	is := isDangerL(2, 2, b, WHITES)
 	assert.True(t, is)
 }
 
 func TestIsThreatenedL_EmptyBoard(t *testing.T) {
 	b := &board.Board{}
 
-	is := isThreatenedL(board.WHITE_PAWN_A, 2, 3, b)
+	is := isThreatenedL(2, 3, b, WHITES)
 	assert.False(t, is)
 }
 
@@ -860,7 +860,7 @@ func TestIsThreatenedL_TwoColumnsFar(t *testing.T) {
 	b.SetPiece(board.WHITE_PAWN_A, board.A2)
 	b.SetPiece(board.BLACK_KNIGHT_KING, board.C3)
 
-	is := isThreatenedL(board.WHITE_PAWN_A, 1, 0, b)
+	is := isThreatenedL(1, 0, b, WHITES)
 	assert.True(t, is)
 }
 
@@ -869,7 +869,7 @@ func TestIsThreatenedL_TwoLinesFar(t *testing.T) {
 	b.SetPiece(board.WHITE_PAWN_A, board.A2)
 	b.SetPiece(board.BLACK_KNIGHT_KING, board.B4)
 
-	is := isThreatenedL(board.WHITE_PAWN_A, 1, 0, b)
+	is := isThreatenedL(1, 0, b, WHITES)
 	assert.True(t, is)
 }
 
@@ -878,7 +878,7 @@ func TestIsThreatenedDiagonal_Danger(t *testing.T) {
 	b.SetPiece(board.WHITE_PAWN_A, board.A1)
 	b.SetPiece(board.BLACK_BISHOP_KING, board.H8)
 
-	is := isThreatenedDiagonal(board.WHITE_PAWN_A, 0, 0, b)
+	is := isThreatenedDiagonal(0, 0, b, WHITES)
 	assert.True(t, is)
 }
 
@@ -887,7 +887,7 @@ func TestIsThreatenedDiagonal_NoDanger(t *testing.T) {
 	b.SetPiece(board.WHITE_PAWN_A, board.A1)
 	b.SetPiece(board.BLACK_BISHOP_KING, board.F8)
 
-	is := isThreatenedDiagonal(board.WHITE_PAWN_A, 0, 0, b)
+	is := isThreatenedDiagonal(0, 0, b, WHITES)
 	assert.False(t, is)
 }
 
@@ -896,7 +896,7 @@ func TestIsThreatenedHorizontal_Danger(t *testing.T) {
 	b.SetPiece(board.WHITE_PAWN_A, board.A1)
 	b.SetPiece(board.BLACK_QUEEN, board.H1)
 
-	is := isThreatenedHorizontal(board.WHITE_PAWN_A, 0, 0, b)
+	is := isThreatenedHorizontal(0, 0, b, WHITES)
 	assert.True(t, is)
 }
 
@@ -905,7 +905,7 @@ func TestIsThreatenedHorizontal_NoDanger(t *testing.T) {
 	b.SetPiece(board.WHITE_PAWN_A, board.A1)
 	b.SetPiece(board.BLACK_QUEEN, board.H8)
 
-	is := isThreatenedHorizontal(board.WHITE_PAWN_A, 0, 0, b)
+	is := isThreatenedHorizontal(0, 0, b, WHITES)
 	assert.False(t, is)
 }
 
@@ -914,7 +914,7 @@ func TestIsThreatenedVertical_Danger(t *testing.T) {
 	b.SetPiece(board.WHITE_PAWN_A, board.A1)
 	b.SetPiece(board.BLACK_QUEEN, board.A8)
 
-	is := isThreatenedVertical(board.WHITE_PAWN_A, 0, 0, b)
+	is := isThreatenedVertical(0, 0, b, WHITES)
 	assert.True(t, is)
 }
 
@@ -923,55 +923,7 @@ func TestIsThreatenedVertical_NoDanger(t *testing.T) {
 	b.SetPiece(board.WHITE_PAWN_A, board.A1)
 	b.SetPiece(board.BLACK_QUEEN, board.H8)
 
-	is := isThreatenedVertical(board.WHITE_PAWN_A, 0, 0, b)
-	assert.False(t, is)
-}
-
-func TestGetCoordinates_A1(t *testing.T) {
-	b := &board.Board{}
-	b.SetPiece(board.WHITE_PAWN_A, board.A1)
-
-	lin, col := getCoordinates(board.WHITE_PAWN_A, b)
-
-	assert.Equal(t, 0, lin)
-	assert.Equal(t, 0, col)
-}
-
-func TestGetCoordinates_E4(t *testing.T) {
-	b := &board.Board{}
-	b.SetPiece(board.WHITE_PAWN_A, board.E4)
-
-	lin, col := getCoordinates(board.WHITE_PAWN_A, b)
-
-	assert.Equal(t, 3, lin)
-	assert.Equal(t, 4, col)
-}
-
-func TestGetCoordinates_H8(t *testing.T) {
-	b := &board.Board{}
-	b.SetPiece(board.WHITE_PAWN_A, board.H8)
-
-	lin, col := getCoordinates(board.WHITE_PAWN_A, b)
-
-	assert.Equal(t, 7, lin)
-	assert.Equal(t, 7, col)
-}
-
-func TestIsPieceInCheck_Check(t *testing.T) {
-	b := &board.Board{}
-	b.SetPiece(board.WHITE_PAWN_A, board.H8)
-	b.SetPiece(board.BLACK_ROOK_KING, board.H3)
-
-	is := isPieceInCheck(board.WHITE_PAWN_A, b)
-	assert.True(t, is)
-}
-
-func TestIsPieceInCheck_NoCheck(t *testing.T) {
-	b := &board.Board{}
-	b.SetPiece(board.WHITE_PAWN_A, board.H8)
-	b.SetPiece(board.BLACK_BISHOP_KING, board.H3)
-
-	is := isPieceInCheck(board.WHITE_PAWN_A, b)
+	is := isThreatenedVertical(0, 0, b, WHITES)
 	assert.False(t, is)
 }
 

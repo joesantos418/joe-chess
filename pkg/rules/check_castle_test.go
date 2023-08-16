@@ -115,3 +115,18 @@ func TestHasRookMoved_Castle(t *testing.T) {
 func TestIsPathFree(t *testing.T) {
 
 }
+
+func TestIsPathFreeForShortWhiteCastle_No(t *testing.T) {
+	g := NewGame()
+	is := isPathFreeForShortWhiteCastle(g)
+
+	assert.False(t, is)
+}
+
+func TestIsPathFreeForShortWhiteCastle_Yes(t *testing.T) {
+	g := NewGame()
+	g.Board.SetPiece(board.NO_PIECE, board.F1)
+	is := isPathFreeForShortWhiteCastle(g)
+
+	assert.True(t, is)
+}

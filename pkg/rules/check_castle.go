@@ -76,34 +76,38 @@ func hasRookMoved(to board.SquareName, g *Game) bool {
 func isPathFree(p board.Piece, from, to board.SquareName, g *Game) bool {
 	switch to {
 	case board.G1:
-		return isPathFreeForShortWhiteCastle(g.Board)
+		return isPathFreeForShortWhiteCastle(g)
 	case board.C1:
-		return isPathFreeForLongWhiteCastle(g.Board)
+		return isPathFreeForLongWhiteCastle(g)
 	case board.G8:
-		return isPathFreeForShortBlackCastle(g.Board)
+		return isPathFreeForShortBlackCastle(g)
 	case board.C8:
-		return isPathFreeForLongBlackCastle(g.Board)
+		return isPathFreeForLongBlackCastle(g)
 	}
 
 	return false
 }
 
-func isPathFreeForShortWhiteCastle(b *board.Board) bool {
-	p := b.GetPiece(board.F1)
-	return p == board.NO_PIECE && !isPieceInCheck(p, b)
+func isPathFreeForShortWhiteCastle(g *Game) bool {
+	p := g.Board.GetPiece(board.F1)
+	lin, col := board.GetCoordinatesBySquareName(board.F1)
+	return p == board.NO_PIECE && !isSquareInCheck(lin, col, g.Board, g.NowPlays)
 }
 
-func isPathFreeForLongWhiteCastle(b *board.Board) bool {
-	p := b.GetPiece(board.D1)
-	return p == board.NO_PIECE && !isPieceInCheck(p, b)
+func isPathFreeForLongWhiteCastle(g *Game) bool {
+	p := g.Board.GetPiece(board.D1)
+	lin, col := board.GetCoordinatesBySquareName(board.D1)
+	return p == board.NO_PIECE && !isSquareInCheck(lin, col, g.Board, g.NowPlays)
 }
 
-func isPathFreeForShortBlackCastle(b *board.Board) bool {
-	p := b.GetPiece(board.F8)
-	return p == board.NO_PIECE && !isPieceInCheck(p, b)
+func isPathFreeForShortBlackCastle(g *Game) bool {
+	p := g.Board.GetPiece(board.F8)
+	lin, col := board.GetCoordinatesBySquareName(board.F8)
+	return p == board.NO_PIECE && !isSquareInCheck(lin, col, g.Board, g.NowPlays)
 }
 
-func isPathFreeForLongBlackCastle(b *board.Board) bool {
-	p := b.GetPiece(board.D8)
-	return p == board.NO_PIECE && !isPieceInCheck(p, b)
+func isPathFreeForLongBlackCastle(g *Game) bool {
+	p := g.Board.GetPiece(board.D8)
+	lin, col := board.GetCoordinatesBySquareName(board.D8)
+	return p == board.NO_PIECE && !isSquareInCheck(lin, col, g.Board, g.NowPlays)
 }

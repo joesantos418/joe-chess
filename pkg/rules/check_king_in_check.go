@@ -40,65 +40,79 @@ func simulateMove(p board.Piece, from board.SquareName, to board.SquareName, b *
 
 func checkKingInCheck(g *Game, b *board.Board) bool {
 	if g.NowPlays == WHITES {
-		return isPieceInCheck(board.WHITE_KING, b)
+		lin, col := getWhiteKingCoordinates(b)
+		return isSquareInCheck(lin, col, b, g.NowPlays)
 	} else {
-		return isPieceInCheck(board.BLACK_KING, b)
+		lin, col := getBlackKingCoordinates(b)
+		return isSquareInCheck(lin, col, b, g.NowPlays)
 	}
 }
 
-func isPieceInCheck(p board.Piece, b *board.Board) bool {
-	lin, col := getCoordinates(p, b)
-	return isThreatenedVertical(p, lin, col, b) ||
-		isThreatenedHorizontal(p, lin, col, b) ||
-		isThreatenedDiagonal(p, lin, col, b) ||
-		isThreatenedL(p, lin, col, b)
+func isSquareInCheck(lin, col int, b *board.Board, c Color) bool {
+	return isThreatenedVertical(lin, col, b, c) ||
+		isThreatenedHorizontal(lin, col, b, c) ||
+		isThreatenedDiagonal(lin, col, b, c) ||
+		isThreatenedL(lin, col, b, c)
 }
 
-func getCoordinates(p board.Piece, b *board.Board) (int, int) {
+// wont write a generic method because some pieces can appear more than once on the board
+func getWhiteKingCoordinates(b *board.Board) (int, int) {
 	for lin := 0; lin < board.MAX_LIN; lin++ {
 		for col := 0; col < board.MAX_COL; col++ {
-			if b.Squares[lin][col].Piece == p {
+			if b.Squares[lin][col].Piece == board.WHITE_KING {
 				return lin, col
 			}
 		}
 	}
 
-	panic("could not find piece on the board")
+	panic("could not find white king on the board")
 }
 
-func isThreatenedVertical(p board.Piece, lin int, col int, b *board.Board) bool {
-	return isThreatenedUp(p, lin, col, b) || isThreatenedDown(p, lin, col, b)
+func getBlackKingCoordinates(b *board.Board) (int, int) {
+	for lin := 0; lin < board.MAX_LIN; lin++ {
+		for col := 0; col < board.MAX_COL; col++ {
+			if b.Squares[lin][col].Piece == board.BLACK_KING {
+				return lin, col
+			}
+		}
+	}
+
+	panic("could not find white king on the board")
 }
 
-func isThreatenedHorizontal(p board.Piece, lin int, col int, b *board.Board) bool {
-	return isThreatenedRight(p, lin, col, b) || isThreatenedLeft(p, lin, col, b)
+func isThreatenedVertical(lin int, col int, b *board.Board, c Color) bool {
+	return isThreatenedUp(lin, col, b, c) || isThreatenedDown(lin, col, b, c)
 }
 
-func isThreatenedDiagonal(p board.Piece, lin int, col int, b *board.Board) bool {
-	return isThreatenedNE(p, lin, col, b) ||
-		isThreatenedNW(p, lin, col, b) ||
-		isThreatenedSE(p, lin, col, b) ||
-		isThreatenedSW(p, lin, col, b)
+func isThreatenedHorizontal(lin int, col int, b *board.Board, c Color) bool {
+	return isThreatenedRight(lin, col, b, c) || isThreatenedLeft(lin, col, b, c)
 }
 
-func isThreatenedL(p board.Piece, lin, col int, b *board.Board) bool {
-	return isDangerL(p, lin+1, col+2, b) ||
-		isDangerL(p, lin+2, col+1, b) ||
-		isDangerL(p, lin-1, col+2, b) ||
-		isDangerL(p, lin-2, col+1, b) ||
-		isDangerL(p, lin+1, col-2, b) ||
-		isDangerL(p, lin+2, col-1, b) ||
-		isDangerL(p, lin-1, col-2, b) ||
-		isDangerL(p, lin-2, col-1, b)
+func isThreatenedDiagonal(lin int, col int, b *board.Board, c Color) bool {
+	return isThreatenedNE(lin, col, b, c) ||
+		isThreatenedNW(lin, col, b, c) ||
+		isThreatenedSE(lin, col, b, c) ||
+		isThreatenedSW(lin, col, b, c)
 }
 
-func isDangerL(p board.Piece, lin, col int, b *board.Board) bool {
+func isThreatenedL(lin, col int, b *board.Board, c Color) bool {
+	return isDangerL(lin+1, col+2, b, c) ||
+		isDangerL(lin+2, col+1, b, c) ||
+		isDangerL(lin-1, col+2, b, c) ||
+		isDangerL(lin-2, col+1, b, c) ||
+		isDangerL(lin+1, col-2, b, c) ||
+		isDangerL(lin+2, col-1, b, c) ||
+		isDangerL(lin-1, col-2, b, c) ||
+		isDangerL(lin-2, col-1, b, c)
+}
+
+func isDangerL(lin, col int, b *board.Board, c Color) bool {
 	if lin < 0 || lin >= board.MAX_COL || col < 0 || col >= board.MAX_COL {
 		return false
 	}
 
 	return b.Squares[lin][col].Piece != board.NO_PIECE &&
-		getColor(p) != getColor(b.Squares[lin][col].Piece) &&
+		c != getColor(b.Squares[lin][col].Piece) &&
 		isLAttacker(b.Squares[lin][col].Piece)
 }
 
@@ -109,36 +123,36 @@ func isLAttacker(p board.Piece) bool {
 		p == board.BLACK_KNIGHT_KING
 }
 
-func isThreatenedUp(p board.Piece, lin int, col int, b *board.Board) bool {
+func isThreatenedUp(lin int, col int, b *board.Board, c Color) bool {
 	if lin == board.MAX_LIN {
 		return false
 	}
 
 	for i := 1; i < (board.MAX_LIN - lin); i++ {
 		if b.Squares[lin+i][col].Piece != board.NO_PIECE {
-			return isVerticalDanger(p, b.Squares[lin+i][col].Piece, lin, lin+i)
+			return isVerticalDanger(b.Squares[lin+i][col].Piece, lin, lin+i, c)
 		}
 	}
 
 	return false
 }
 
-func isThreatenedDown(p board.Piece, lin int, col int, b *board.Board) bool {
+func isThreatenedDown(lin int, col int, b *board.Board, c Color) bool {
 	if lin == 0 {
 		return false
 	}
 
 	for i := 1; i <= lin; i++ {
 		if b.Squares[lin-i][col].Piece != board.NO_PIECE {
-			return isVerticalDanger(p, b.Squares[lin-i][col].Piece, lin, lin-i)
+			return isVerticalDanger(b.Squares[lin-i][col].Piece, lin, lin-i, c)
 		}
 	}
 
 	return false
 }
 
-func isVerticalDanger(def, atk board.Piece, from int, to int) bool {
-	return getColor(def) != getColor(atk) &&
+func isVerticalDanger(atk board.Piece, from int, to int, c Color) bool {
+	return c != getColor(atk) &&
 		isAttackVertical(atk) &&
 		isInRangeForVerticalAttack(atk, from, to)
 }
@@ -171,38 +185,38 @@ func isInRangeForVerticalAttack(p board.Piece, from, to int) bool {
 	}
 }
 
-func isThreatenedRight(p board.Piece, lin int, col int, b *board.Board) bool {
+func isThreatenedRight(lin int, col int, b *board.Board, c Color) bool {
 	if col == (board.MAX_COL - 1) {
 		return false
 	}
 
 	for i := 1; i < (board.MAX_COL - col); i++ {
 		if b.Squares[lin][col+i].Piece != board.NO_PIECE {
-			return isHorizontalDanger(p, b.Squares[lin][col+i].Piece, col, col+i)
+			return isHorizontalDanger(b.Squares[lin][col+i].Piece, col, col+i, c)
 		}
 	}
 
 	return false
 }
 
-// isThreatenedLeft checks if a piece @p in a square with coordinates @lin, @col
-// in a board @b has an horizontal threat to the left
-func isThreatenedLeft(p board.Piece, lin int, col int, b *board.Board) bool {
+// isThreatenedLeft checks if a piece in a square with coordinates @lin, @col
+// in a board @b has an horizontal threat to the left while being @c colors turn
+func isThreatenedLeft(lin int, col int, b *board.Board, c Color) bool {
 	if col == 0 {
 		return false
 	}
 
 	for i := 1; i <= col; i++ {
 		if b.Squares[lin][col-i].Piece != board.NO_PIECE {
-			return isHorizontalDanger(p, b.Squares[lin][col-i].Piece, col, col-i)
+			return isHorizontalDanger(b.Squares[lin][col-i].Piece, col, col-i, c)
 		}
 	}
 
 	return false
 }
 
-func isHorizontalDanger(def, atk board.Piece, from int, to int) bool {
-	return getColor(def) != getColor(atk) &&
+func isHorizontalDanger(atk board.Piece, from int, to int, c Color) bool {
+	return c != getColor(atk) &&
 		isAttackHorizontal(atk) &&
 		isInRangeForHorizontalAttack(atk, from, to)
 }
@@ -239,9 +253,10 @@ func isSquareEmpty(s board.Square) bool {
 	return s.Piece == board.NO_PIECE
 }
 
-// isThreatenedNE checks if a piece @p in a square with coordinates @lin, @col
-// in a board @b is threatened diagonally from the NE direction
-func isThreatenedNE(p board.Piece, lin int, col int, b *board.Board) bool {
+// isThreatenedNE checks if a piece in a square with coordinates @lin, @col
+// in a board @b is threatened diagonally from the NE direction during @c colors
+// turn
+func isThreatenedNE(lin int, col int, b *board.Board, c Color) bool {
 	if lin == board.MAX_LIN || col == board.MAX_COL {
 		return false
 	}
@@ -256,14 +271,14 @@ func isThreatenedNE(p board.Piece, lin int, col int, b *board.Board) bool {
 		// can we encapsulate it in a function?
 		if !isSquareEmpty(b.Squares[nextL][nextC]) {
 			atk := b.Squares[nextL][nextC].Piece
-			return isDiagonalDanger(p, atk, lin, col, nextL, nextC)
+			return isDiagonalDanger(atk, lin, col, nextL, nextC, c)
 		}
 	}
 
 	return false
 }
 
-func isThreatenedNW(p board.Piece, lin int, col int, b *board.Board) bool {
+func isThreatenedNW(lin int, col int, b *board.Board, c Color) bool {
 	if lin == board.MAX_LIN || col == 0 {
 		return false
 	}
@@ -274,14 +289,14 @@ func isThreatenedNW(p board.Piece, lin int, col int, b *board.Board) bool {
 
 		if !isSquareEmpty(b.Squares[nextL][nextC]) {
 			atk := b.Squares[nextL][nextC].Piece
-			return isDiagonalDanger(p, atk, lin, col, nextL, nextC)
+			return isDiagonalDanger(atk, lin, col, nextL, nextC, c)
 		}
 	}
 
 	return false
 }
 
-func isThreatenedSE(p board.Piece, lin int, col int, b *board.Board) bool {
+func isThreatenedSE(lin int, col int, b *board.Board, c Color) bool {
 	if lin == 0 || col == board.MAX_COL {
 		return false
 	}
@@ -292,14 +307,14 @@ func isThreatenedSE(p board.Piece, lin int, col int, b *board.Board) bool {
 
 		if !isSquareEmpty(b.Squares[nextL][nextC]) {
 			atk := b.Squares[nextL][nextC].Piece
-			return isDiagonalDanger(p, atk, lin, col, nextL, nextC)
+			return isDiagonalDanger(atk, lin, col, nextL, nextC, c)
 		}
 	}
 
 	return false
 }
 
-func isThreatenedSW(p board.Piece, lin int, col int, b *board.Board) bool {
+func isThreatenedSW(lin int, col int, b *board.Board, c Color) bool {
 	if lin == 0 || col == 0 {
 		return false
 	}
@@ -310,15 +325,15 @@ func isThreatenedSW(p board.Piece, lin int, col int, b *board.Board) bool {
 
 		if !isSquareEmpty(b.Squares[nextL][nextC]) {
 			atk := b.Squares[nextL][nextC].Piece
-			return isDiagonalDanger(p, atk, lin, col, nextL, nextC)
+			return isDiagonalDanger(atk, lin, col, nextL, nextC, c)
 		}
 	}
 
 	return false
 }
 
-func isDiagonalDanger(def board.Piece, atk board.Piece, lf int, cf int, lt int, ct int) bool {
-	return getColor(def) != getColor(atk) &&
+func isDiagonalDanger(atk board.Piece, lf int, cf int, lt int, ct int, c Color) bool {
+	return c != getColor(atk) &&
 		isAttackDiagonal(atk) &&
 		isInRangeForDiagonalAttack(atk, lf, cf, lt, ct)
 }
@@ -423,5 +438,5 @@ func getColor(p board.Piece) Color {
 		return BLACKS
 	}
 
-	panic("trying to get color of an unknown piece")
+	panic("Cannot get color of piece")
 }
