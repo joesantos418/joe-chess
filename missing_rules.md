@@ -1,0 +1,2 @@
+- en passant capture
+- pawn promotion
