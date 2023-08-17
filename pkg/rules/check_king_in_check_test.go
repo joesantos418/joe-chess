@@ -7,6 +7,107 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestGetWhiteKingCoordinates(t *testing.T) {
+	b := &board.Board{}
+	b.SetPiece(board.WHITE_KING, board.A1)
+
+	lin, col := getWhiteKingCoordinates(b)
+
+	assert.Equal(t, 0, lin)
+	assert.Equal(t, 0, col)
+}
+
+func TestGetWhiteKingCoordinates_OtherPieces(t *testing.T) {
+	b := &board.Board{}
+	b.SetPiece(board.WHITE_KING, board.A1)
+	b.SetPiece(board.WHITE_PAWN_A, board.B1)
+
+	lin, col := getWhiteKingCoordinates(b)
+
+	assert.Equal(t, 0, lin)
+	assert.Equal(t, 0, col)
+}
+
+func TestGetBlackKingCoordinates(t *testing.T) {
+	b := &board.Board{}
+	b.SetPiece(board.BLACK_KING, board.A1)
+
+	lin, col := getBlackKingCoordinates(b)
+
+	assert.Equal(t, 0, lin)
+	assert.Equal(t, 0, col)
+}
+
+func TestIsSquareInCheck_Vertical(t *testing.T) {
+	lin := 0
+	col := 0
+	b := &board.Board{}
+
+	b.SetPiece(board.WHITE_PAWN_A, board.A1)
+	b.SetPiece(board.BLACK_ROOK_KING, board.A3)
+
+	c := WHITES
+	is := isSquareInCheck(lin, col, b, c)
+
+	assert.True(t, is)
+}
+
+func TestIsSquareInCheck_Horizontal(t *testing.T) {
+	lin := 0
+	col := 0
+	b := &board.Board{}
+
+	b.SetPiece(board.WHITE_PAWN_A, board.A1)
+	b.SetPiece(board.BLACK_ROOK_KING, board.G1)
+
+	c := WHITES
+	is := isSquareInCheck(lin, col, b, c)
+
+	assert.True(t, is)
+}
+
+func TestIsSquareInCheck_Diagonal(t *testing.T) {
+	lin := 0
+	col := 0
+	b := &board.Board{}
+
+	b.SetPiece(board.WHITE_PAWN_A, board.A1)
+	b.SetPiece(board.BLACK_BISHOP_KING, board.D4)
+
+	c := WHITES
+	is := isSquareInCheck(lin, col, b, c)
+
+	assert.True(t, is)
+}
+
+func TestIsSquareInCheck_L(t *testing.T) {
+	lin := 0
+	col := 0
+	b := &board.Board{}
+
+	b.SetPiece(board.WHITE_PAWN_A, board.A1)
+	b.SetPiece(board.BLACK_KNIGHT_KING, board.C2)
+
+	c := WHITES
+	is := isSquareInCheck(lin, col, b, c)
+
+	assert.True(t, is)
+}
+
+func TestIsSquareInCheck_No(t *testing.T) {
+	lin := 0
+	col := 0
+	b := &board.Board{}
+
+	b.SetPiece(board.WHITE_PAWN_A, board.A1)
+	b.SetPiece(board.BLACK_KNIGHT_KING, board.G1)
+
+	c := WHITES
+	is := isSquareInCheck(lin, col, b, c)
+
+	assert.False(t, is)
+}
+
 func TestGetColor(t *testing.T) {
 	color := getColor(board.WHITE_KING)
 	assert.Equal(t, WHITES, color)

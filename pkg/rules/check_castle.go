@@ -25,11 +25,7 @@ func canCastle(p board.Piece, from, to board.SquareName, g *Game) (bool, error) 
 		return false, nil
 	}
 
-	isInCheck, err := isKingInCheck(p, from, to, g)
-	if err != nil {
-		return false, err
-	}
-
+	isInCheck := checkKingInCheck(g, g.Board)
 	if isInCheck {
 		return false, nil
 	}
