@@ -890,6 +890,8 @@ func TestIsThreatenedUp_Farther(t *testing.T) {
 	assert.True(t, is)
 }
 
+// coverage helped show that this test was giving the right result but not for
+// the right reason
 func TestIsThreatenedUp_NoUp(t *testing.T) {
 	b := &board.Board{}
 	b.SetPiece(board.BLACK_PAWN_A, board.A8)

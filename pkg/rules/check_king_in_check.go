@@ -124,7 +124,7 @@ func isLAttacker(p board.Piece) bool {
 }
 
 func isThreatenedUp(lin int, col int, b *board.Board, c Color) bool {
-	if lin == board.MAX_LIN {
+	if lin == (board.MAX_LIN - 1) {
 		return false
 	}
 
@@ -257,7 +257,7 @@ func isSquareEmpty(s board.Square) bool {
 // in a board @b is threatened diagonally from the NE direction during @c colors
 // turn
 func isThreatenedNE(lin int, col int, b *board.Board, c Color) bool {
-	if lin == board.MAX_LIN || col == board.MAX_COL {
+	if lin == (board.MAX_LIN-1) || col == (board.MAX_COL-1) {
 		return false
 	}
 

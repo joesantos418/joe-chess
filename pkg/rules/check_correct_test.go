@@ -40,6 +40,9 @@ func TestIsCapture(t *testing.T) {
 
 	is = isCapture(board.WHITE_PAWN_E, board.D6, g)
 	assert.False(t, is)
+
+	is = isCapture(board.NO_PIECE, board.D6, g)
+	assert.False(t, is)
 }
 
 func TestIsDiagonalUpOne(t *testing.T) {

@@ -61,3 +61,14 @@ func TestGetPiece(t *testing.T) {
 	assert.Equal(t, NO_PIECE, b.GetPiece(C1))
 	assert.Equal(t, NO_PIECE, b.GetPiece(H4))
 }
+
+func TestClone(t *testing.T) {
+	b := &Board{}
+	c := b.Clone()
+
+	for i := 0; i < 8; i++ {
+		for j := 0; j < 8; j++ {
+			assert.Equal(t, NO_PIECE, c.Squares[i][j].Piece)
+		}
+	}
+}
