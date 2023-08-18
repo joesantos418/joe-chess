@@ -288,10 +288,10 @@ func TestIsCorrectForQueen(t *testing.T) {
 
 func TestIsCorrectForKing(t *testing.T) {
 	g := NewGame()
-	is := isCorrectForKing(board.E1, board.E2, g)
+	is := isCorrectForKing(board.WHITE_KING, board.E1, board.E2, g)
 	assert.True(t, is)
 
-	is = isCorrectForKing(board.A1, board.B6, g)
+	is = isCorrectForKing(board.BLACK_KING, board.A1, board.B6, g)
 	assert.False(t, is)
 }
 

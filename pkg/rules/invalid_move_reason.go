@@ -10,6 +10,8 @@ const (
 	EMPTY_SQUARE
 	KING_IN_CHECK
 	INVALID_MOVE
+	ERROR_CHECKING
+	CANNOT_CASTLE
 )
 
 func (r InvalidMoveReason) String() string {
@@ -28,6 +30,10 @@ func (r InvalidMoveReason) String() string {
 		return "KING_IN_CHECK"
 	case INVALID_MOVE:
 		return "INVALID_MOVE"
+	case ERROR_CHECKING:
+		return "ERROR_CHECKING"
+	case CANNOT_CASTLE:
+		return "CANNOT_CASTLE"
 	}
 
 	return "Unknown reason"

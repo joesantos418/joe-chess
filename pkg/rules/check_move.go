@@ -25,7 +25,7 @@ func isValidMove(p board.Piece, from, to board.SquareName, g *Game) (bool, Inval
 	is, err := isKingInCheck(p, from, to, g)
 
 	if err != nil {
-		return false, VALID_MOVE, nil
+		return false, ERROR_CHECKING, err
 	}
 
 	if is {

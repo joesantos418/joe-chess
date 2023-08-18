@@ -58,14 +58,16 @@ func isMoveCorrect(p board.Piece, from, to board.SquareName, g *Game) bool {
 
 	case board.BLACK_KING,
 		board.WHITE_KING:
-		return isCorrectForKing(from, to, g)
+		return isCorrectForKing(p, from, to, g)
 	}
 
 	return false
 }
 
 func isCorrectForWhitePawn(p board.Piece, from, to board.SquareName, g *Game) bool {
-	if isCapture(p, to, g) {
+	if isWhiteEnPassant(p, from, to, g) {
+		return true
+	} else if isCapture(p, to, g) {
 		return isDiagonalUpOne(from, to)
 	} else {
 		if isFirstSquareForWhitePawn(from) {
@@ -77,7 +79,9 @@ func isCorrectForWhitePawn(p board.Piece, from, to board.SquareName, g *Game) bo
 }
 
 func isCorrectForBlackPawn(p board.Piece, from, to board.SquareName, g *Game) bool {
-	if isCapture(p, to, g) {
+	if isBlackEnPassant(p, from, to, g) {
+		return true
+	} else if isCapture(p, to, g) {
 		return isDiagonalDownOne(from, to)
 	} else {
 		if isFirstSquareForBlackPawn(from) {
@@ -104,7 +108,17 @@ func isCorrectForQueen(from, to board.SquareName, g *Game) bool {
 	return isDiagonalN(from, to) || isVerticalN(from, to) || isHorizontalN(from, to)
 }
 
-func isCorrectForKing(from, to board.SquareName, g *Game) bool {
+func isCorrectForKing(p board.Piece, from, to board.SquareName, g *Game) bool {
+	if isCastle(p, to) {
+		can, err := canCastle(p, from, to, g)
+		if err != nil {
+			panic(err)
+		}
+		if !can {
+			return false
+		}
+	}
+
 	return isVerticalOne(from, to) || isHorizontalOne(from, to) || isDiagonalOne(from, to)
 }
 
