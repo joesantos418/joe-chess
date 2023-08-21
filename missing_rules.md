@@ -1,3 +1,9 @@
-- pawn promotion
-- draw rules
-- end of game rules
+- check if kings are too close
+- checkmate
+- resignation
+- timeout
+- stalemate
+- insuficient material
+- 50 move rule
+- threefold repetition
+- agreement to draw
