@@ -1,2 +1,3 @@
-- en passant capture
 - pawn promotion
+- draw rules
+- end of game rules
