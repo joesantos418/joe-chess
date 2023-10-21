@@ -15,7 +15,45 @@ func generateMoves(c Color, b board.Board) []Move {
 }
 
 func isColor(p board.Piece, c Color) bool {
-	return false
+	if c == WHITES {
+		return p == board.WHITE_PAWN_A ||
+			p == board.WHITE_PAWN_B ||
+			p == board.WHITE_PAWN_C ||
+			p == board.WHITE_PAWN_D ||
+			p == board.WHITE_PAWN_E ||
+			p == board.WHITE_PAWN_F ||
+			p == board.WHITE_PAWN_G ||
+			p == board.WHITE_PAWN_H ||
+			p == board.WHITE_ROOK_QUEEN ||
+			p == board.WHITE_ROOK_KING ||
+			p == board.WHITE_KNIGHT_QUEEN ||
+			p == board.WHITE_KNIGHT_KING ||
+			p == board.WHITE_BISHOP_QUEEN ||
+			p == board.WHITE_BISHOP_KING ||
+			p == board.WHITE_QUEEN ||
+			p == board.WHITE_KING
+	}
+
+	if c == BLACKS {
+		return p == board.BLACK_PAWN_A ||
+			p == board.BLACK_PAWN_B ||
+			p == board.BLACK_PAWN_C ||
+			p == board.BLACK_PAWN_D ||
+			p == board.BLACK_PAWN_E ||
+			p == board.BLACK_PAWN_F ||
+			p == board.BLACK_PAWN_G ||
+			p == board.BLACK_PAWN_H ||
+			p == board.BLACK_ROOK_QUEEN ||
+			p == board.BLACK_ROOK_KING ||
+			p == board.BLACK_KNIGHT_QUEEN ||
+			p == board.BLACK_KNIGHT_KING ||
+			p == board.BLACK_BISHOP_QUEEN ||
+			p == board.BLACK_BISHOP_KING ||
+			p == board.BLACK_QUEEN ||
+			p == board.BLACK_KING
+	}
+
+	panic("unexpected piece")
 }
 
 // we gotta consider more than one of the same piece on the board
@@ -23,7 +61,7 @@ func generateMovesForPiece(p board.Piece, n board.SquareName, b board.Board) []M
 	var moves []Move
 
 	if movesVertically(p) {
-		moves = append(moves, generateVericalMoves(p, n, b)...)
+		moves = append(moves, generateVerticalMoves(p, n, b)...)
 	}
 
 	if movesHorizontally(p) {
@@ -52,34 +90,140 @@ func generateMovesForPiece(p board.Piece, n board.SquareName, b board.Board) []M
 }
 
 func movesVertically(p board.Piece) bool {
-	return false
+	return p == board.WHITE_PAWN_A ||
+		p == board.WHITE_PAWN_B ||
+		p == board.WHITE_PAWN_C ||
+		p == board.WHITE_PAWN_D ||
+		p == board.WHITE_PAWN_E ||
+		p == board.WHITE_PAWN_F ||
+		p == board.WHITE_PAWN_G ||
+		p == board.WHITE_PAWN_H ||
+		p == board.WHITE_ROOK_QUEEN ||
+		p == board.WHITE_ROOK_KING ||
+		p == board.WHITE_QUEEN ||
+		p == board.WHITE_KING ||
+		p == board.BLACK_PAWN_A ||
+		p == board.BLACK_PAWN_B ||
+		p == board.BLACK_PAWN_C ||
+		p == board.BLACK_PAWN_D ||
+		p == board.BLACK_PAWN_E ||
+		p == board.BLACK_PAWN_F ||
+		p == board.BLACK_PAWN_G ||
+		p == board.BLACK_PAWN_H ||
+		p == board.BLACK_ROOK_QUEEN ||
+		p == board.BLACK_ROOK_KING ||
+		p == board.BLACK_QUEEN ||
+		p == board.BLACK_KING
 }
 
 func movesHorizontally(p board.Piece) bool {
-	return false
+	return p == board.WHITE_ROOK_QUEEN ||
+		p == board.WHITE_ROOK_KING ||
+		p == board.WHITE_QUEEN ||
+		p == board.WHITE_KING ||
+		p == board.BLACK_ROOK_QUEEN ||
+		p == board.BLACK_ROOK_KING ||
+		p == board.BLACK_QUEEN ||
+		p == board.BLACK_KING
 }
 
 func movesDiagonally(p board.Piece) bool {
-	return false
+	return p == board.WHITE_BISHOP_QUEEN ||
+		p == board.WHITE_BISHOP_KING ||
+		p == board.WHITE_QUEEN ||
+		p == board.WHITE_KING ||
+		p == board.BLACK_BISHOP_QUEEN ||
+		p == board.BLACK_BISHOP_KING ||
+		p == board.BLACK_QUEEN ||
+		p == board.BLACK_KING
 }
 
 func movesInL(p board.Piece) bool {
-	return false
+	return p == board.WHITE_KNIGHT_QUEEN ||
+		p == board.WHITE_KNIGHT_KING ||
+		p == board.BLACK_KNIGHT_QUEEN ||
+		p == board.BLACK_KNIGHT_KING
 }
 
 func isPawn(p board.Piece) bool {
-	return false
+	return p == board.WHITE_PAWN_A ||
+		p == board.WHITE_PAWN_B ||
+		p == board.WHITE_PAWN_C ||
+		p == board.WHITE_PAWN_D ||
+		p == board.WHITE_PAWN_E ||
+		p == board.WHITE_PAWN_F ||
+		p == board.WHITE_PAWN_G ||
+		p == board.WHITE_PAWN_H ||
+		p == board.BLACK_PAWN_A ||
+		p == board.BLACK_PAWN_B ||
+		p == board.BLACK_PAWN_C ||
+		p == board.BLACK_PAWN_D ||
+		p == board.BLACK_PAWN_E ||
+		p == board.BLACK_PAWN_F ||
+		p == board.BLACK_PAWN_G ||
+		p == board.BLACK_PAWN_H
 }
 
-func generateVericalMoves(p board.Piece, n board.SquareName, b board.Board) []Move {
-	return []Move{}
+func generateVerticalMoves(p board.Piece, n board.SquareName, b board.Board) []Move {
+	var moves []Move
+
+	moves = append(moves, generateVerticalMovesUp(p, n, b)...)
+	moves = append(moves, generateVerticalMovesDown(p, n, b)...)
+
+	return moves
+}
+
+func generateVerticalMovesUp(p board.Piece, n board.SquareName, b board.Board) []Move {
+	var moves []Move
+	return moves
+}
+
+func generateVerticalMovesDown(p board.Piece, n board.SquareName, b board.Board) []Move {
+	var moves []Move
+	return moves
 }
 
 func generateHorizontalMoves(p board.Piece, n board.SquareName, b board.Board) []Move {
+	var moves []Move
+
+	moves = append(moves, generateHorizontalMovesLeft(p, n, b)...)
+	moves = append(moves, generateHorizontalMovesRight(p, n, b)...)
+
+	return moves
+}
+
+func generateHorizontalMovesLeft(p board.Piece, n board.SquareName, b board.Board) []Move {
+	return []Move{}
+}
+
+func generateHorizontalMovesRight(p board.Piece, n board.SquareName, b board.Board) []Move {
 	return []Move{}
 }
 
 func generateDiagonalMoves(p board.Piece, n board.SquareName, b board.Board) []Move {
+	var moves []Move
+
+	moves = append(moves, generateDiagonalMovesNE(p, n, b)...)
+	moves = append(moves, generateDiagonalMovesNW(p, n, b)...)
+	moves = append(moves, generateDiagonalMovesSE(p, n, b)...)
+	moves = append(moves, generateDiagonalMovesSW(p, n, b)...)
+
+	return moves
+}
+
+func generateDiagonalMovesNE(p board.Piece, n board.SquareName, b board.Board) []Move {
+	return []Move{}
+}
+
+func generateDiagonalMovesNW(p board.Piece, n board.SquareName, b board.Board) []Move {
+	return []Move{}
+}
+
+func generateDiagonalMovesSE(p board.Piece, n board.SquareName, b board.Board) []Move {
+	return []Move{}
+}
+
+func generateDiagonalMovesSW(p board.Piece, n board.SquareName, b board.Board) []Move {
 	return []Move{}
 }
 
